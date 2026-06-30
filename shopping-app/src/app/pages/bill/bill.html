@@ -1,0 +1,82 @@
+<div class="page">
+    <header class="header">
+        <div class="left-section">
+            <div
+                class="home-icon"
+                routerLink="/home"
+            >
+                🏠
+            </div>
+            <div class="logo">
+                ShopEase
+            </div>
+        </div>
+    </header>
+    <div class="bill-container">
+        <div class="bill-card">
+            <h1>
+                Order Successful 🎉
+            </h1>
+            <div class="bill-top">
+                <div>
+                    <h3>
+                        Customer
+                    </h3>
+                    <p>
+                        {{username}}
+                    </p>
+                </div>
+                <div>
+                    <h3>
+                        Order ID
+                    </h3>
+                    <p>
+                        {{orderId}}
+                    </p>
+                </div>
+                <div>
+                    <h3>
+                        Date
+                    </h3>
+                    <p>
+                        {{currentDate | date:'medium'}}
+                    </p>
+                </div>
+            </div>
+            <div class="items-section">
+                <div
+                    class="bill-item"
+                    *ngFor="let item of orderedItems"
+                >
+                    <div>
+                        <h2>
+                            {{item.name}}
+                        </h2>
+                        <p>
+                            Quantity :
+                            {{item.quantity}}
+                        </p>
+                    </div>
+                    <div class="price-section">
+                        $
+                        {{item.price * item.quantity}}
+                    </div>
+                </div>
+            </div>
+            <div class="total-section">
+                <h2>
+                    Total Amount
+                </h2>
+                <h2>
+                    $ {{totalAmount}}
+                </h2>
+            </div>
+            <button
+                class="home-btn"
+                (click)="backToHome()"
+            >
+                Continue Shopping
+            </button>
+        </div>
+    </div>
+</div>

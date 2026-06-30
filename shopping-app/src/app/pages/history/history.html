@@ -1,0 +1,103 @@
+<div class="page">
+
+    <app-header></app-header>
+
+    <div class="history-container">
+
+        <h1>
+            Purchase History
+        </h1>
+
+        @if(purchaseHistory.length === 0){
+
+            <div class="empty-history">
+
+                No Purchase History Found
+
+            </div>
+
+        }
+
+        @for(order of purchaseHistory; track order.orderId){
+
+            <div class="history-card">
+
+                <div class="history-top">
+
+                    <div>
+
+                        <h3>
+                            Order ID
+                        </h3>
+
+                        <p>
+                            {{order.orderId}}
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Date
+                        </h3>
+
+                        <p>
+                            {{order.date | date:'medium'}}
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Total Amount
+                        </h3>
+
+                        <p>
+                            $ {{order.total}}
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="items-section">
+
+                    @for(item of order.items; track item.id){
+
+                        <div class="item-card">
+
+                            <div>
+
+                                <h2>
+                                    {{item.name}}
+                                </h2>
+
+                                <span>
+                                    Quantity :
+                                    {{item.quantity}}
+                                </span>
+
+                            </div>
+
+                            <div class="price">
+
+                                $
+                                {{item.price * item.quantity}}
+
+                            </div>
+
+                        </div>
+
+                    }
+
+                </div>
+
+            </div>
+
+        }
+
+    </div>
+
+</div>

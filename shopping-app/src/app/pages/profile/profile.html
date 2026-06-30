@@ -1,0 +1,56 @@
+<div class="page">
+
+    <div class="profile-card">
+
+        <div class="profile-icon">
+            👤
+        </div>
+
+        <h1>
+            User Profile
+        </h1>
+
+        <div class="profile-info">
+
+            <div class="info-box">
+
+                <h3>
+                    Username
+                </h3>
+
+                <p>
+                    {{username}}
+                </p>
+
+            </div>
+
+            <div class="info-box">
+
+                <h3>
+                    Password
+                </h3>
+
+                <p>
+                    {{password}}
+                </p>
+
+            </div>
+
+        </div>
+        <button
+        class="history-btn"
+        routerLink="/history"
+        >
+        Purchase History
+        </button>
+
+        <button
+            class="logout-btn"
+            (click)="logout()"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</div>

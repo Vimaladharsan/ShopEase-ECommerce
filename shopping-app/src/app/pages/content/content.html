@@ -1,0 +1,66 @@
+<div class="page">
+    <app-header></app-header>
+    @if(showPopup){
+
+    <app-popup
+        [message]="popupMessage"
+        [type]="popupType"
+    >
+    </app-popup>
+
+    }
+    <div class="content-container">
+        <h1>
+            {{categoryName}}
+        </h1>
+        <div class="product-grid">
+            @for(product of products; track product.id){
+                <div class="product-card">
+                    <h2>
+                        {{product.name}}
+                    </h2>
+                    <p class="price">
+                        $ {{product.price}}
+                    </p>
+                    <p class="stock">
+                        Stock Left :
+                        {{product.stock}}
+                    </p>
+                    <div class="quantity-section">
+                        <button
+                            (click)="decreaseQuantity(product)"
+                        >
+                            -
+                        </button>
+                        <span>
+                            {{quantities[product.id]}}
+                        </span>
+                        <button
+                            (click)="increaseQuantity(product)"
+                        >
+                            +
+                        </button>
+                    </div>
+                    <button
+                    class="cart-btn"
+                    (click)="addToCart(product)"
+                    [disabled]="product.stock === 0"
+                    >
+                    @if(product.stock === 0){
+                        Out Of Stock
+                    }
+                    @else{
+                        Add To Cart
+                    }
+                </button>
+                </div>
+            }
+        </div>
+    </div>
+    <button
+    class="checkout-floating-btn"
+    (click)="goToCheckout()"
+>
+    🛒 Checkout
+</button>
+</div>

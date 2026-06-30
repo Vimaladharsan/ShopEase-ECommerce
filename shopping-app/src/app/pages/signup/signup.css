@@ -1,0 +1,105 @@
+.page{
+    width:100%;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:peachpuff;
+    overflow:hidden;
+}
+.signup-container{
+    width:clamp(280px,90%,420px);
+    background:white;
+    padding:clamp(25px,4vw,45px);
+    border-radius:25px;
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+    transition:0.3s;
+    box-shadow:0 0 20px orange;
+}
+.signup-container:hover{
+    transform:translateY(-8px) scale(1.02);
+    box-shadow:0 0 25px deeppink;
+}
+.signup-container h1{
+    text-align:center;
+    color:darkblue;
+    font-size:clamp(1.8rem,5vw,3rem);
+    letter-spacing:1px;
+}
+.signup-container form{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+.signup-container input{
+    width:100%;
+    padding:clamp(12px,2vw,16px);
+    border:2px solid lightgray;
+    border-radius:15px;
+    outline:none;
+    font-size:clamp(0.9rem,2vw,1rem);
+    transition:0.3s;
+    background:white;
+}
+.signup-container input:focus{
+    border-color:orange;
+    transform:scale(1.03);
+    box-shadow:0 0 10px orange;
+}
+.signup-container input.ng-valid.ng-touched{
+    border-color:green;
+}
+.signup-container input.ng-invalid.ng-touched{
+    border-color:red;
+}
+.signup-container button{
+    width:100%;
+    padding:clamp(12px,2vw,16px);
+    border:none;
+    border-radius:15px;
+    background:orange;
+    color:white;
+    font-weight:bold;
+    font-size:clamp(1rem,2vw,1.1rem);
+    transition:0.3s;
+}
+.signup-container button:hover{
+    background:deeppink;
+    transform:scale(1.05);
+    box-shadow:0 0 15px deeppink;
+}
+.signup-container button:disabled{
+    background:gray;
+    cursor:not-allowed;
+    transform:none;
+    box-shadow:none;
+}
+.error{
+    color:red;
+    font-size:clamp(0.8rem,2vw,0.95rem);
+    margin-top:-10px;
+    font-weight:bold;
+}
+@media(max-width:600px){
+    .signup-container{
+        width:95%;
+        padding:25px;
+    }
+    .signup-container h1{
+        font-size:2rem;
+    }
+}
+
+@media(min-width:601px) and (max-width:1024px){
+    .signup-container{
+        width:75%;
+    }
+}
+@media(min-width:1025px){
+    .signup-container{
+        width:420px;
+    }
+}

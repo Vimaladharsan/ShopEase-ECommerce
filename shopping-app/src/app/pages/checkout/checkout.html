@@ -1,0 +1,92 @@
+<div class="page">
+    <app-header></app-header>
+    @if(showPopup){
+
+    <app-popup
+        [message]="popupMessage"
+        [type]="popupType"
+    >
+    </app-popup>
+
+}
+    <div class="checkout-wrapper">
+        <h1>
+            Shopping Cart
+        </h1>
+        <div class="checkout-layout">
+            <div class="cart-items">
+                @if(cartItems.length === 0){
+                    <div class="empty-cart">
+                        Your cart is empty
+                    </div>
+                }
+                @for(item of cartItems; track item.id){
+                    <div class="cart-card">
+                        <div class="item-details">
+                            <h2>
+                                {{item.name}}
+                            </h2>
+                            <p>
+                                $ {{item.price}}
+                            </p>
+                            <span>
+                                Stock :
+                                {{item.stock}}
+                            </span>
+                        </div>
+                        <div class="item-actions">
+                            <div class="quantity-buttons">
+                                <button
+                                    (click)="decreaseQuantity(item)"
+                                >
+                                    -
+                                </button>
+                                <span>
+                                    {{item.quantity}}
+                                </span>
+                                <button
+                                    (click)="increaseQuantity(item)"
+                                >
+                                    +
+                                </button>
+                            </div>
+                            <button
+                                class="remove-btn"
+                                (click)="removeItem(item)"
+                            >
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="summary-section">
+                <h2>
+                    Order Summary
+                </h2>
+                <div class="summary-row">
+                    <span>
+                        Total Items
+                    </span>
+                    <span>
+                        {{cartService.getCartCount()}}
+                    </span>
+                </div>
+                <div class="summary-row">
+                    <span>
+                        Total Amount
+                    </span>
+                    <span>
+                        $ {{totalAmount}}
+                    </span>
+                </div>
+                <button
+                    class="checkout-btn"
+                    (click)="placeOrder()"
+                >
+                    Proceed To Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

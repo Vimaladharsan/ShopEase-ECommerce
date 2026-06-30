@@ -1,0 +1,67 @@
+<div class="page">
+    @if(showPopup){
+
+    <app-popup
+        [message]="popupMessage"
+    >
+    </app-popup>
+
+}
+    <div class="signup-container">
+        <h1>Login</h1>
+        <form
+            #signupForm="ngForm"
+            (ngSubmit)="signup(signupForm)"
+        >
+            <input
+                type="text"
+                name="username"
+                [(ngModel)]="username"
+                placeholder="Enter Username"
+                required
+                #nameRef="ngModel"
+            >
+            @if(nameRef.invalid && nameRef.touched){
+
+                <div class="error">
+                    Username is required
+                </div>
+
+            }
+            <input
+                type="password"
+                name="password"
+                [(ngModel)]="password"
+                placeholder="Enter Password"
+                required
+                minlength="5"
+                #passwordRef="ngModel"
+            >
+            @if(passwordRef.invalid && passwordRef.touched){
+                <div class="error">
+                    @if(passwordRef.errors?.['required']){
+                        <span>Password is required</span>
+                    }
+                    @if(passwordRef.errors?.['minlength']){
+                        <span>
+                            Password must be at least 5 characters
+                        </span>
+                    }
+                </div>
+            }
+            @if(nameRef.valid && nameRef.touched && passwordRef.valid && passwordRef.touched){
+                @if(username!=uscheck && password!=pscheck){
+                <div class="error">
+                    <span>Invalid Credentials!</span>
+                </div>
+            }
+            }
+            <button
+                type="submit"
+                [disabled]="signupForm.invalid"
+            >
+                Login
+            </button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,168 @@
+.page{
+    width:100%;
+    min-height:100vh;
+    background:#0f172a;
+    overflow-x:hidden;
+}
+p{
+    color: black;
+}
+.header{
+    width:100%;
+    padding:20px;
+    background:darkblue;
+    display:flex;
+    align-items:center;
+}
+
+.left-section{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.home-icon{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:1.3rem;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.home-icon:hover{
+    background:orange;
+    transform:scale(1.08);
+}
+
+.logo{
+    color:white;
+    font-size:2rem;
+    font-weight:bold;
+}
+
+.bill-container{
+    width:min(92%,900px);
+    margin:auto;
+    padding:40px 0;
+}
+
+.bill-card{
+    background:white;
+    padding:35px;
+    border-radius:20px;
+    box-shadow:0 8px 25px rgba(0,0,0,0.3);
+    display:flex;
+    flex-direction:column;
+    gap:30px;
+}
+
+.bill-card h1{
+    text-align:center;
+    color:darkblue;
+}
+
+.bill-top{
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(200px,1fr));
+    gap:20px;
+}
+
+.bill-top div{
+    background:#f1f5f9;
+    padding:20px;
+    border-radius:15px;
+}
+
+.bill-top h3{
+    color:darkblue;
+    margin-bottom:10px;
+}
+
+.bill-top p{
+    font-weight:bold;
+}
+
+.items-section{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.bill-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px;
+    border-radius:15px;
+    background:#f8fafc;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+.bill-item h2{
+    color:darkblue;
+    margin-bottom:8px;
+}
+
+.bill-item p{
+    color:#475569;
+    font-weight:bold;
+}
+
+.price-section{
+    color:deeppink;
+    font-size:1.2rem;
+    font-weight:bold;
+}
+
+.total-section{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px;
+    border-radius:15px;
+    background:darkblue;
+    color:white;
+    flex-wrap:wrap;
+    gap:15px;
+}
+
+.home-btn{
+    padding:15px;
+    border-radius:12px;
+    background:orange;
+    color:white;
+    font-size:1rem;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.home-btn:hover{
+    background:deeppink;
+    transform:translateY(-3px);
+}
+
+@media(max-width:600px){
+
+    .bill-card{
+        padding:20px;
+    }
+
+    .bill-item{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .total-section{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+}
