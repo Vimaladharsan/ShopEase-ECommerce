@@ -42,6 +42,10 @@ export class Content {
     public cartService:CartService,
     private userService:UserService
   ){
+    if(!this.userService.username){
+      this.router.navigate(['/signup']);
+      return;
+    }
 
     const selectedCategory=
     this.cartService.selectedCategory;

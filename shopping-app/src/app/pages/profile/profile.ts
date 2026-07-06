@@ -22,20 +22,20 @@ export class Profile {
     private cartService:CartService,
     private router:Router
   ){
-
+    if(!this.userService.username){
+      this.router.navigate(['/signup']);
+      return;
+    }
     this.username=this.userService.username;
     this.password=this.userService.password;
-
   }
 
   logout(){
-
+    this.userService.logout();
     this.cartService.cartItems=[];
     this.cartService.lastOrder=[];
     this.cartService.lastTotal=0;
-
     this.router.navigate(['/signup']);
-
   }
 
 }

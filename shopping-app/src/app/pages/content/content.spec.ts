@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideRouter } from '@angular/router';
+import { UserService } from '../../services/user';
 import { Content } from './content';
 
 describe('Content', () => {
@@ -9,6 +10,10 @@ describe('Content', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Content],
+      providers: [
+        provideRouter([]),
+        { provide: UserService, useValue: { username: 'Vimal', password: '123' } }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(Content);

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { UserService } from './user';
 
 @Injectable({
   providedIn:'root'
@@ -11,9 +12,98 @@ export class CartService {
 
   lastTotal=0;
 
-  purchaseHistory:any[]=[];
+  private _purchaseHistory:any[]=[];
 
-  cartItems:any[]=[];
+  private _cartItems:any[]=[];
+
+  private lastUser = '';
+
+  constructor(private userService: UserService) {
+    this.checkUserSync();
+  }
+
+  private checkUserSync() {
+    const currentUser = this.userService.username || 'guest';
+    if (currentUser !== this.lastUser) {
+      this.lastUser = currentUser;
+      this.loadCartFromStorage();
+      this.loadHistoryFromStorage();
+    }
+  }
+
+  get cartItems(): any[] {
+    this.checkUserSync();
+    return new Proxy(this._cartItems, {
+      set: (target, property, value, receiver) => {
+        const success = Reflect.set(target, property, value, receiver);
+        if (success) {
+          this.saveCart();
+        }
+        return success;
+      },
+      deleteProperty: (target, property) => {
+        const success = Reflect.deleteProperty(target, property);
+        if (success) {
+          this.saveCart();
+        }
+        return success;
+      }
+    });
+  }
+
+  set cartItems(val: any[]) {
+    this.checkUserSync();
+    this._cartItems = val;
+    this.saveCart();
+  }
+
+  get purchaseHistory(): any[] {
+    this.checkUserSync();
+    return new Proxy(this._purchaseHistory, {
+      set: (target, property, value, receiver) => {
+        const success = Reflect.set(target, property, value, receiver);
+        if (success) {
+          this.saveHistory();
+        }
+        return success;
+      },
+      deleteProperty: (target, property) => {
+        const success = Reflect.deleteProperty(target, property);
+        if (success) {
+          this.saveHistory();
+        }
+        return success;
+      }
+    });
+  }
+
+  set purchaseHistory(val: any[]) {
+    this.checkUserSync();
+    this._purchaseHistory = val;
+    this.saveHistory();
+  }
+
+  private loadCartFromStorage() {
+    const key = `shopease_cart_${this.lastUser}`;
+    const data = localStorage.getItem(key);
+    this._cartItems = data ? JSON.parse(data) : [];
+  }
+
+  private saveCart() {
+    const key = `shopease_cart_${this.lastUser}`;
+    localStorage.setItem(key, JSON.stringify(this._cartItems));
+  }
+
+  private loadHistoryFromStorage() {
+    const key = `shopease_history_${this.lastUser}`;
+    const data = localStorage.getItem(key);
+    this._purchaseHistory = data ? JSON.parse(data) : [];
+  }
+
+  private saveHistory() {
+    const key = `shopease_history_${this.lastUser}`;
+    localStorage.setItem(key, JSON.stringify(this._purchaseHistory));
+  }
 
   addToCart(product:any,quantity:number){
 
@@ -109,4 +199,4 @@ export class CartService {
 
   }
 
-}
+}

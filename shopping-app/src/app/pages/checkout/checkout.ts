@@ -40,6 +40,10 @@ export class Checkout {
     private userService:UserService,
     private router:Router
   ){
+    if(!this.userService.username){
+      this.router.navigate(['/signup']);
+      return;
+    }
 
     this.cartItems=
     this.cartService.cartItems;

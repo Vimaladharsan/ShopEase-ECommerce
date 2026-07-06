@@ -1,0 +1,14 @@
+[
+  {
+    "username": "Vimal",
+    "password": "12345",
+    "fullName": "Vimaladharsan",
+    "email": "vimal@example.com"
+  },
+  {
+    "username": "DemoUser",
+    "password": "password123",
+    "fullName": "Demo User",
+    "email": "demo@shopease.com"
+  }
+]

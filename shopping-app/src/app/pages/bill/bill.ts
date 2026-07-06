@@ -23,6 +23,10 @@ export class Bill {
     private userService:UserService,
     private router:Router
   ){
+    if(!this.userService.username){
+      this.router.navigate(['/signup']);
+      return;
+    }
     this.orderedItems =this.cartService.lastOrder;
     this.totalAmount =this.cartService.lastTotal;
     this.username =this.userService.username;

@@ -1,33 +1,79 @@
 <div class="page">
     @if(showPopup){
-
-    <app-popup
-        [message]="popupMessage"
-    >
-    </app-popup>
-
-}
-    <div class="signup-container">
-        <h1>Login</h1>
-        <form
-            #signupForm="ngForm"
-            (ngSubmit)="signup(signupForm)"
+        <app-popup
+            [message]="popupMessage"
+            [type]="popupType"
         >
+        </app-popup>
+    }
+    <div class="signup-container">
+        <h1>{{ isLoginMode ? 'Login' : 'Sign Up' }}</h1>
+        <form
+            #authForm="ngForm"
+            (ngSubmit)="onSubmit(authForm)"
+        >
+            <!-- Full Name (Register Only) -->
+            @if(!isLoginMode){
+                <input
+                    type="text"
+                    name="fullName"
+                    [(ngModel)]="fullName"
+                    placeholder="Enter Full Name"
+                    required
+                    #fullNameRef="ngModel"
+                >
+                @if(fullNameRef.invalid && fullNameRef.touched){
+                    <div class="error">
+                        Full Name is required
+                    </div>
+                }
+            }
+
+            <!-- Email (Register Only) -->
+            @if(!isLoginMode){
+                <input
+                    type="email"
+                    name="email"
+                    [(ngModel)]="email"
+                    placeholder="Enter Email Address"
+                    required
+                    email
+                    #emailRef="ngModel"
+                >
+                @if(emailRef.invalid && emailRef.touched){
+                    <div class="error">
+                        @if(emailRef.errors?.['required']){
+                            <span>Email is required</span>
+                        }
+                        @if(emailRef.errors?.['email']){
+                            <span>Invalid email address format</span>
+                        }
+                    </div>
+                }
+            }
+
+            <!-- Username (Login & Register) -->
             <input
                 type="text"
                 name="username"
                 [(ngModel)]="username"
                 placeholder="Enter Username"
                 required
+                minlength="3"
                 #nameRef="ngModel"
             >
             @if(nameRef.invalid && nameRef.touched){
-
                 <div class="error">
-                    Username is required
+                    @if(nameRef.errors?.['required']){
+                        <span>Username is required</span>
+                    }
+                    @if(nameRef.errors?.['minlength']){
+                        <span>Username must be at least 3 characters</span>
+                    }
                 </div>
-
             }
+
+            <!-- Password (Login & Register) -->
             <input
                 type="password"
                 name="password"
@@ -43,25 +89,40 @@
                         <span>Password is required</span>
                     }
                     @if(passwordRef.errors?.['minlength']){
-                        <span>
-                            Password must be at least 5 characters
-                        </span>
+                        <span>Password must be at least 5 characters</span>
                     }
                 </div>
             }
-            @if(nameRef.valid && nameRef.touched && passwordRef.valid && passwordRef.touched){
-                @if(username!=uscheck && password!=pscheck){
-                <div class="error">
-                    <span>Invalid Credentials!</span>
-                </div>
+
+            <!-- Confirm Password (Register Only) -->
+            @if(!isLoginMode){
+                <input
+                    type="password"
+                    name="confirmPassword"
+                    [(ngModel)]="confirmPassword"
+                    placeholder="Confirm Password"
+                    required
+                    #confirmPasswordRef="ngModel"
+                >
+                @if(confirmPasswordRef.touched && password !== confirmPassword){
+                    <div class="error">
+                        <span>Passwords do not match</span>
+                    </div>
+                }
             }
-            }
+
             <button
                 type="submit"
-                [disabled]="signupForm.invalid"
+                [disabled]="authForm.invalid || (!isLoginMode && password !== confirmPassword)"
             >
-                Login
+                {{ isLoginMode ? 'Login' : 'Sign Up' }}
             </button>
         </form>
+
+        <div class="toggle-mode-text" style="text-align: center; margin-top: 10px;">
+            <a href="javascript:void(0)" (click)="toggleMode()" style="color: darkblue; text-decoration: none; font-weight: bold;">
+                {{ isLoginMode ? "Don't have an account? Sign Up" : "Already have an account? Login" }}
+            </a>
+        </div>
     </div>
-</div>
+</div>

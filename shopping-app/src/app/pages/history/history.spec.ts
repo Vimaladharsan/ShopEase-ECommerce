@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideRouter } from '@angular/router';
+import { UserService } from '../../services/user';
 import { History } from './history';
 
 describe('History', () => {
@@ -9,6 +10,10 @@ describe('History', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [History],
+      providers: [
+        provideRouter([]),
+        { provide: UserService, useValue: { username: 'Vimal', password: '123' } }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(History);

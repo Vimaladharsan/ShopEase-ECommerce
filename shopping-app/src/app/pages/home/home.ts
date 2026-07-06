@@ -22,6 +22,10 @@ export class Home {
     private userService:UserService,
     public cartService:CartService
   ){
+    if(!this.userService.username){
+      this.router.navigate(['/signup']);
+      return;
+    }
     this.categories=this.dataService.categories;
     this.username=this.userService.username;
   }
