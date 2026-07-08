@@ -78,11 +78,15 @@ export class Signup {
       }
 
       const newUser = {
-        username: this.username,
-        password: this.password,
-        fullName: this.fullName,
-        email: this.email
-      };
+      username: this.username,
+      password: this.password,
+      fullName: this.fullName,
+      email: this.email,
+      memberSince: new Date().toISOString(),
+      phone: '',
+      address: '',
+      purchaseHistory: []
+};
 
       const result = await this.userService.register(newUser);
       if (result.success) {
@@ -97,4 +101,4 @@ export class Signup {
       }
     }
   }
-}
+}

@@ -3,12 +3,20 @@
     "username": "Vimal",
     "password": "12345",
     "fullName": "Vimaladharsan",
-    "email": "vimal@example.com"
+    "email": "vimal@example.com",
+    "memberSince": "2026-07-08",
+    "phone": "",
+    "address": "",
+    "purchaseHistory": []
   },
   {
     "username": "DemoUser",
     "password": "password123",
     "fullName": "Demo User",
-    "email": "demo@shopease.com"
+    "email": "demo@shopease.com",
+    "memberSince": "2026-07-08",
+    "phone": "",
+    "address": "",
+    "purchaseHistory": []
   }
 ]

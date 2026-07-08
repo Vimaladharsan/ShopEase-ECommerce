@@ -129,8 +129,41 @@ export class UserService {
 
     return { success: true, message: 'Registration successful' };
   }
+  getPurchaseHistory(): any[] {
+  const currentUser = this.getCurrentUser();
+  return currentUser?.purchaseHistory || [];
+}
 
+addPurchase(order: any) {
+  const currentUser = this.getCurrentUser();
+  if (!currentUser) return;
+
+  if (!currentUser.purchaseHistory) {
+    currentUser.purchaseHistory = [];
+  }
+
+  currentUser.purchaseHistory.push(order);
+
+  // Update current session
+  this.setCurrentUser(currentUser);
+
+  // Update stored users
+  const localUsersStr = localStorage.getItem('shopease_users');
+  if (localUsersStr) {
+    const users = JSON.parse(localUsersStr);
+
+    const index = users.findIndex(
+      (u: any) =>
+        u.username.toLowerCase() === currentUser.username.toLowerCase()
+    );
+
+    if (index !== -1) {
+      users[index] = currentUser;
+      localStorage.setItem('shopease_users', JSON.stringify(users));
+    }
+  }
+}
   logout() {
     this.setCurrentUser(null);
   }
-}
+}

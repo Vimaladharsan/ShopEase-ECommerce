@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-
+import { DataService } from '../../services/data';
 import { Header } from '../../extras/header/header';
 import { CartService } from '../../services/cart';
 import { UserService } from '../../services/user';
@@ -36,9 +36,9 @@ export class Checkout {
   popupTimer:any;
 
   constructor(
-    public cartService:CartService,
-    private userService:UserService,
-    private router:Router
+ private userService:UserService,
+private dataService:DataService,
+private router:Router
   ){
     if(!this.userService.username){
       this.router.navigate(['/signup']);
@@ -157,19 +157,23 @@ export class Checkout {
     this.cartService.lastTotal=
     this.totalAmount;
 
-    this.cartService.purchaseHistory.push({
+   const order = {
 
-      orderId:
-      'ORD' +
-      Math.floor(Math.random()*1000000),
+  orderId:
+  'ORD' +
+  Math.floor(Math.random() * 1000000),
 
-      items:[...this.cartItems],
+  items: [...this.cartItems],
 
-      total:this.totalAmount,
+  total: this.totalAmount,
 
-      date:new Date()
+  date: new Date(),
 
-    });
+  status: 'Delivered'
+
+};
+
+this.userService.addPurchase(order);
 
     this.cartService.cartItems=[];
 

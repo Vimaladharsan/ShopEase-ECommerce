@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
 import { Header } from '../../extras/header/header';
-import { CartService } from '../../services/cart';
 import { UserService } from '../../services/user';
 
 @Component({
@@ -22,7 +21,6 @@ export class History {
   purchaseHistory:any[]=[];
 
   constructor(
-    private cartService:CartService,
     private userService:UserService,
     private router:Router
   ){
@@ -32,7 +30,7 @@ export class History {
     }
 
     this.purchaseHistory=
-    this.cartService.purchaseHistory;
+    this.userService.getPurchaseHistory();
 
   }
 
