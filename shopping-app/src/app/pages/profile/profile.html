@@ -1,55 +1,188 @@
 <div class="page">
 
+    @if(showPopup){
+
+        <app-popup
+            [message]="popupMessage"
+            [type]="popupType">
+        </app-popup>
+
+    }
+
     <div class="profile-card">
 
         <div class="profile-icon">
             👤
         </div>
 
-        <h1>
-            User Profile
-        </h1>
+        <h1>My Profile</h1>
 
         <div class="profile-info">
 
+           <div class="info-box">
+    <h3>Full Name</h3>
+
+    @if(isEditing){
+        <input
+            type="text"
+            [(ngModel)]="editedUser.fullName"
+        >
+    }
+    @else{
+        <p>{{user.fullName}}</p>
+    }
+</div>
+
             <div class="info-box">
-
-                <h3>
-                    Username
-                </h3>
-
-                <p>
-                    {{username}}
-                </p>
-
+                <h3>Username</h3>
+                <p>{{user.username}}</p>
             </div>
 
             <div class="info-box">
+    <h3>Email</h3>
 
-                <h3>
-                    Password
-                </h3>
+    @if(isEditing){
+        <input
+            type="email"
+            [(ngModel)]="editedUser.email"
+        >
+    }
+    @else{
+        <p>{{user.email}}</p>
+    }
+</div>
 
-                <p>
-                    {{password}}
-                </p>
+            <div class="info-box">
+    <h3>Phone</h3>
 
+    @if(isEditing){
+        <input
+            type="text"
+            [(ngModel)]="editedUser.phone"
+        >
+    }
+    @else{
+        <p>{{user.phone || 'Not Added'}}</p>
+    }
+</div>
+
+            <div class="info-box">
+    <h3>Address</h3>
+
+    @if(isEditing){
+        <textarea
+            rows="3"
+            [(ngModel)]="editedUser.address">
+        </textarea>
+    }
+    @else{
+        <p>{{user.address || 'Not Added'}}</p>
+    }
+</div>
+
+            <div class="info-box">
+                <h3>Member Since</h3>
+                <p>{{user.memberSince | date:'mediumDate'}}</p>
             </div>
 
         </div>
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <h2>{{totalOrders}}</h2>
+                <span>Total Orders</span>
+            </div>
+
+            <div class="stat-card">
+                <h2>₹ {{totalSpent}}</h2>
+                <span>Money Spent</span>
+            </div>
+
+            <div class="stat-card">
+                <h2>{{totalItems}}</h2>
+                <span>Items Purchased</span>
+            </div>
+
+        </div>
+
+        <div class="recent-orders">
+
+            <h2>Recent Orders</h2>
+
+            @if(recentOrders.length === 0){
+
+                <p>No orders yet.</p>
+
+            }
+
+            @for(order of recentOrders; track order.orderId){
+
+                <div class="recent-order-card">
+
+                    <div>
+                        <strong>{{order.orderId}}</strong>
+                    </div>
+
+                    <div>
+                        {{order.date | date:'mediumDate'}}
+                    </div>
+
+                    <div>
+                        ₹ {{order.total}}
+                    </div>
+
+                    <div class="status">
+                        {{order.status}}
+                    </div>
+
+                </div>
+
+            }
+
+        </div>
+
+        <div class="action-buttons">
+
+    @if(!isEditing){
+
         <button
-        class="history-btn"
-        routerLink="/history"
-        >
-        Purchase History
+            class="edit-btn"
+            (click)="startEditing()">
+            ✏ Edit Profile
+        </button>
+
+    }
+
+    @else{
+
+        <button
+            class="save-btn"
+            (click)="saveProfile()">
+            💾 Save
         </button>
 
         <button
-            class="logout-btn"
-            (click)="logout()"
-        >
-            Logout
+            class="cancel-btn"
+            (click)="cancelEditing()">
+            ❌ Cancel
         </button>
+
+    }
+
+    <button
+        class="history-btn"
+        routerLink="/history">
+        📦 Purchase History
+    </button>
+
+    <button
+        class="logout-btn"
+        (click)="logout()">
+        🚪 Logout
+    </button>
+
+</div>
 
     </div>
 

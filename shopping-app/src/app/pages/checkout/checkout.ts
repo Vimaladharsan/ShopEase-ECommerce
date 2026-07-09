@@ -37,8 +37,9 @@ export class Checkout {
 
   constructor(
  private userService:UserService,
-private dataService:DataService,
-private router:Router
+ private dataService:DataService,
+ public cartService: CartService,
+ private router:Router
   ){
     if(!this.userService.username){
       this.router.navigate(['/signup']);
