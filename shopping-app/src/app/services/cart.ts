@@ -7,7 +7,7 @@ import { UserService } from './user';
 export class CartService {
 
   selectedCategory:any;
-
+  selectedProduct:any;
   lastOrder:any[]=[];
 
   lastTotal=0;
@@ -199,4 +199,4 @@ export class CartService {
 
   }
 
-}
+}

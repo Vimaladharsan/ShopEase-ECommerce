@@ -6,6 +6,7 @@ import { Checkout } from './pages/checkout/checkout';
 import { Bill } from './pages/bill/bill';
 import { Profile } from './pages/profile/profile';
 import { History } from './pages/history/history';
+import { ProductDetails } from './pages/product-details/product-details';
 
 export const routes: Routes = [
     {
@@ -25,6 +26,10 @@ export const routes: Routes = [
         path:'content',
         component:Content
     },
+    {
+    path:'product-details',
+    component:ProductDetails
+},
     {
         path:'checkout',
         component:Checkout

@@ -1,0 +1,149 @@
+<div class="page">
+
+    <app-header></app-header>
+
+    <div class="details-container">
+
+        <button
+            class="back-btn"
+            (click)="back()">
+            ← Back to Products
+        </button>
+
+        <div class="details-card">
+
+            <!-- Product Image -->
+
+            <div class="image-section">
+
+                <div class="image-placeholder">
+
+                    📦
+
+                    <span>Product Image</span>
+
+                </div>
+
+            </div>
+
+            <!-- Product Information -->
+
+            <div class="info-section">
+
+                <h1>
+                    {{ product.name }}
+                </h1>
+
+                <div class="rating">
+
+                    ★★★★★
+
+                    <span>
+                        {{ product.rating }} ({{ product.reviews }} Reviews)
+                    </span>
+
+                </div>
+
+                <h2 class="price">
+                    ₹ {{ product.price }}
+                </h2>
+
+                <p class="stock">
+                    Stock Available : {{ product.stock }}
+                </p>
+
+                <hr>
+
+                <h3>Description</h3>
+
+                <p>
+                    {{ product.description }}
+                </p>
+
+                <hr>
+
+                <h3>Specifications</h3>
+
+                <div class="specifications">
+
+                    <div>
+
+                        <strong>Brand</strong>
+
+                        <span>{{ product.brand }}</span>
+
+                    </div>
+
+                    <div>
+
+                        <strong>Category</strong>
+
+                        <span>{{ cartService.selectedCategory.name }}</span>
+
+                    </div>
+
+                    <div>
+
+                        <strong>Warranty</strong>
+
+                        <span>{{ product.warranty }}</span>
+
+                    </div>
+
+                    <div>
+
+                        <strong>Delivery</strong>
+
+                        <span>{{ product.delivery }}</span>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <h3>Quantity</h3>
+
+                <div class="quantity-box">
+
+                    <button
+                        (click)="decreaseQuantity()">
+                        -
+                    </button>
+
+                    <span>{{ quantity }}</span>
+
+                    <button
+                        (click)="increaseQuantity()">
+                        +
+                    </button>
+
+                </div>
+
+                <div class="buttons">
+
+                    <button class="wishlist-btn">
+                        ♡ Wishlist
+                    </button>
+
+                    <button
+                        class="cart-btn"
+                        (click)="addToCart()">
+                        🛒 Add To Cart
+                    </button>
+
+                    <button
+                        class="buy-btn"
+                        (click)="addToCart()">
+                        ⚡ Buy Now
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -6,26 +6,54 @@
       {
         "id": 101,
         "name": "Laptop",
+        "brand": "HP",
         "price": 100000,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.8,
+        "reviews": 254,
+        "description": "High-performance Intel Core i7 laptop with 16GB RAM and 512GB SSD, designed for work, gaming and multitasking.",
+        "warranty": "1 Year",
+        "delivery": "Free Delivery",
+        "image": "assets/products/laptop.jpg"
       },
       {
         "id": 102,
         "name": "Phone",
+        "brand": "Samsung",
         "price": 30000,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.7,
+        "reviews": 187,
+        "description": "Premium 5G smartphone with AMOLED display, fast charging and excellent camera performance.",
+        "warranty": "1 Year",
+        "delivery": "Free Delivery",
+        "image": "assets/products/phone.jpg"
       },
       {
         "id": 103,
         "name": "HeadPhones",
+        "brand": "Sony",
         "price": 5000,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.6,
+        "reviews": 321,
+        "description": "Wireless over-ear headphones with noise cancellation and immersive audio quality.",
+        "warranty": "6 Months",
+        "delivery": "Free Delivery",
+        "image": "assets/products/headphones.jpg"
       },
       {
         "id": 104,
         "name": "TV",
+        "brand": "LG",
         "price": 80000,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.9,
+        "reviews": 145,
+        "description": "55-inch 4K Ultra HD Smart TV with Dolby Vision and AI-powered picture enhancement.",
+        "warranty": "2 Years",
+        "delivery": "Free Installation",
+        "image": "assets/products/tv.jpg"
       }
     ]
   },
@@ -36,26 +64,54 @@
       {
         "id": 201,
         "name": "Pizza",
+        "brand": "Domino's",
         "price": 500,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.7,
+        "reviews": 512,
+        "description": "Freshly baked pizza topped with premium cheese and farm-fresh vegetables.",
+        "warranty": "Freshly Prepared",
+        "delivery": "30 Min Delivery",
+        "image": "assets/products/pizza.jpg"
       },
       {
         "id": 202,
         "name": "Burger",
+        "brand": "Burger King",
         "price": 200,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.5,
+        "reviews": 368,
+        "description": "Juicy grilled burger with crispy vegetables and signature sauces.",
+        "warranty": "Freshly Prepared",
+        "delivery": "30 Min Delivery",
+        "image": "assets/products/burger.jpg"
       },
       {
         "id": 203,
         "name": "Sandwich",
+        "brand": "Subway",
         "price": 100,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.4,
+        "reviews": 189,
+        "description": "Healthy grilled sandwich filled with fresh vegetables and delicious sauces.",
+        "warranty": "Freshly Prepared",
+        "delivery": "30 Min Delivery",
+        "image": "assets/products/sandwich.jpg"
       },
       {
         "id": 204,
         "name": "Juice",
+        "brand": "Tropicana",
         "price": 100,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.6,
+        "reviews": 201,
+        "description": "Refreshing fruit juice made from natural ingredients with no preservatives.",
+        "warranty": "Best Before Expiry",
+        "delivery": "Instant Delivery",
+        "image": "assets/products/juice.jpg"
       }
     ]
   },
@@ -66,26 +122,54 @@
       {
         "id": 301,
         "name": "Grand Theft Auto V",
+        "brand": "Rockstar Games",
         "price": 3000,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.9,
+        "reviews": 1845,
+        "description": "Open-world action-adventure game offering endless exploration and exciting missions.",
+        "warranty": "Digital License",
+        "delivery": "Instant Download",
+        "image": "assets/products/gta5.jpg"
       },
       {
         "id": 302,
         "name": "God of War",
+        "brand": "Sony",
         "price": 5000,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.9,
+        "reviews": 1302,
+        "description": "Award-winning action game featuring Kratos and an unforgettable Norse mythology adventure.",
+        "warranty": "Digital License",
+        "delivery": "Instant Download",
+        "image": "assets/products/godofwar.jpg"
       },
       {
         "id": 303,
         "name": "Red Dead Redemption 2",
+        "brand": "Rockstar Games",
         "price": 5000,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.9,
+        "reviews": 1680,
+        "description": "Massive open-world western adventure with stunning visuals and immersive storytelling.",
+        "warranty": "Digital License",
+        "delivery": "Instant Download",
+        "image": "assets/products/rdr2.jpg"
       },
       {
         "id": 304,
         "name": "Sekiro",
+        "brand": "FromSoftware",
         "price": 4000,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.8,
+        "reviews": 951,
+        "description": "Fast-paced samurai action game featuring intense combat and challenging boss fights.",
+        "warranty": "Digital License",
+        "delivery": "Instant Download",
+        "image": "assets/products/sekiro.jpg"
       }
     ]
   },
@@ -96,26 +180,54 @@
       {
         "id": 401,
         "name": "Shirt",
+        "brand": "Allen Solly",
         "price": 1500,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.5,
+        "reviews": 278,
+        "description": "Premium cotton formal shirt suitable for office and casual occasions.",
+        "warranty": "7 Day Return",
+        "delivery": "Free Delivery",
+        "image": "assets/products/shirt.jpg"
       },
       {
         "id": 402,
         "name": "Pant",
+        "brand": "Levi's",
         "price": 2000,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.6,
+        "reviews": 236,
+        "description": "Comfortable slim-fit trousers made from premium quality fabric.",
+        "warranty": "7 Day Return",
+        "delivery": "Free Delivery",
+        "image": "assets/products/pant.jpg"
       },
       {
         "id": 403,
         "name": "T-Shirt",
+        "brand": "Puma",
         "price": 1000,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.7,
+        "reviews": 315,
+        "description": "Soft cotton T-shirt designed for everyday comfort and style.",
+        "warranty": "7 Day Return",
+        "delivery": "Free Delivery",
+        "image": "assets/products/tshirt.jpg"
       },
       {
         "id": 404,
         "name": "Trousers",
+        "brand": "Van Heusen",
         "price": 800,
-        "stock": 20
+        "stock": 20,
+        "rating": 4.4,
+        "reviews": 174,
+        "description": "Classic fit trousers perfect for office wear and formal occasions.",
+        "warranty": "7 Day Return",
+        "delivery": "Free Delivery",
+        "image": "assets/products/trousers.jpg"
       }
     ]
   }

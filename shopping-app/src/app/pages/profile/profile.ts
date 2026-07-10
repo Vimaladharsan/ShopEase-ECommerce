@@ -4,11 +4,12 @@ import { Router, RouterModule } from '@angular/router';
 import { Popup } from '../../extras/popup/popup';
 import { UserService } from '../../services/user';
 import { CartService } from '../../services/cart';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterModule,Popup],
+  imports: [CommonModule, RouterModule,Popup,FormsModule],
   templateUrl: './profile.html',
   styleUrl: './profile.css'
 })

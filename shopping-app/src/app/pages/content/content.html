@@ -42,17 +42,10 @@
                         </button>
                     </div>
                     <button
-                    class="cart-btn"
-                    (click)="addToCart(product)"
-                    [disabled]="product.stock === 0"
-                    >
-                    @if(product.stock === 0){
-                        Out Of Stock
-                    }
-                    @else{
-                        Add To Cart
-                    }
-                </button>
+    class="cart-btn"
+    (click)="viewProduct(product)">
+    View Details
+</button>
                 </div>
             }
         </div>

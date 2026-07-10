@@ -180,6 +180,13 @@ export class Content {
     this.quantities[product.id]=1;
 
   }
+  viewProduct(product:any){
+
+  this.cartService.selectedProduct = product;
+
+  this.router.navigate(['/product-details']);
+
+}
 
   goToCheckout(){
 
