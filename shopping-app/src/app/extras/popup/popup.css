@@ -14,11 +14,15 @@
 
     color:white;
 
-    padding:16px 28px;
+    padding:clamp(12px,2.5vw,16px) clamp(18px,4vw,28px);
 
     border-radius:14px;
 
-    font-size:1rem;
+    max-width:90vw;
+    width:max-content;
+    text-align:center;
+
+    font-size:clamp(0.9rem,2.5vw,1rem);
     font-weight:600;
 
     box-shadow:

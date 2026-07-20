@@ -12,7 +12,7 @@
     width:min(95%,1000px);
     background:white;
     border-radius:25px;
-    padding:40px;
+    padding:clamp(20px,4vw,40px);
     display:flex;
     flex-direction:column;
     gap:35px;
@@ -20,14 +20,14 @@
 }
 
 .profile-icon{
-    width:120px;
-    height:120px;
+    width:clamp(80px,15vw,120px);
+    height:clamp(80px,15vw,120px);
     border-radius:50%;
     background:orange;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:4rem;
+    font-size:clamp(2.5rem,6vw,4rem);
     margin:auto;
 }
 

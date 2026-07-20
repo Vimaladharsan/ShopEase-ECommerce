@@ -1,23 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { UserService } from '../../services/user';
 import { Popup } from '../../extras/popup/popup';
+import { User } from '../../models';
 
 @Component({
-  selector:'app-signup',
-  standalone:true,
-  imports:[
+  selector: 'app-signup',
+  standalone: true,
+  imports: [
     CommonModule,
     FormsModule,
     Popup
   ],
-  templateUrl:'./signup.html',
-  styleUrl:'./signup.css'
+  templateUrl: './signup.html',
+  styleUrl: './signup.css'
 })
 export class Signup {
+  private readonly router = inject(Router);
+  private readonly userService = inject(UserService);
+
   isLoginMode = true;
 
   username = '';
@@ -26,21 +30,16 @@ export class Signup {
   email = '';
   confirmPassword = '';
 
-  showPopup = false;
+  readonly showPopup = signal(false);
   popupMessage = '';
   popupType = 'success';
-
-  constructor(
-    private router: Router,
-    private userService: UserService
-  ) {}
 
   showPopupMessage(message: string, type: string = 'success') {
     this.popupMessage = message;
     this.popupType = type;
-    this.showPopup = true;
+    this.showPopup.set(true);
     setTimeout(() => {
-      this.showPopup = false;
+      this.showPopup.set(false);
     }, 1500);
   }
 
@@ -77,16 +76,16 @@ export class Signup {
         return;
       }
 
-      const newUser = {
-      username: this.username,
-      password: this.password,
-      fullName: this.fullName,
-      email: this.email,
-      memberSince: new Date().toISOString(),
-      phone: '',
-      address: '',
-      purchaseHistory: []
-};
+      const newUser: User = {
+        username: this.username,
+        password: this.password,
+        fullName: this.fullName,
+        email: this.email,
+        memberSince: new Date().toISOString(),
+        phone: '',
+        address: '',
+        purchaseHistory: []
+      };
 
       const result = await this.userService.register(newUser);
       if (result.success) {

@@ -1,168 +1,128 @@
-import { Injectable } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
+import { API_URL } from '../api';
+import { Order, User } from '../models';
+
+const SESSION_KEY = 'shopease_current_user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  // Keeping public properties for backward compatibility
-  username: string = '';
-  password: string = '';
+  private readonly currentUserSignal = signal<User | null>(this.readSession());
 
-  private allUsers: any[] = [];
-  private isLoaded = false;
+  readonly currentUser = this.currentUserSignal.asReadonly();
+  readonly username = computed(() => this.currentUser()?.username ?? '');
 
-  constructor() {
-    // Synchronously check session to make username immediately available
-    const sessionUserStr = localStorage.getItem('shopease_current_user');
-    if (sessionUserStr) {
-      try {
-        const user = JSON.parse(sessionUserStr);
-        this.username = user.username;
-        this.password = user.password;
-      } catch (e) {}
+  private readSession(): User | null {
+    const sessionUserStr = localStorage.getItem(SESSION_KEY);
+    if (!sessionUserStr) {
+      return null;
     }
-    this.initUserSession();
-  }
-
-  private async initUserSession() {
-    await this.ensureUsersLoaded();
-    const sessionUserStr = localStorage.getItem('shopease_current_user');
-    if (sessionUserStr) {
-      try {
-        const user = JSON.parse(sessionUserStr);
-        this.setCurrentUser(user);
-      } catch (e) {
-        console.error('Failed to parse current user session', e);
-      }
-    }
-  }
-
-  private setCurrentUser(user: any | null) {
-    if (user) {
-      this.username = user.username;
-      this.password = user.password;
-      localStorage.setItem('shopease_current_user', JSON.stringify(user));
-    } else {
-      this.username = '';
-      this.password = '';
-      localStorage.removeItem('shopease_current_user');
-    }
-  }
-
-  getCurrentUser() {
-    const sessionUserStr = localStorage.getItem('shopease_current_user');
-    return sessionUserStr ? JSON.parse(sessionUserStr) : null;
-  }
-
-  async ensureUsersLoaded(): Promise<any[]> {
-    if (this.isLoaded) {
-      return this.allUsers;
-    }
-
-    let seedUsers: any[] = [];
     try {
-      const response = await fetch('/data/users.json');
-      if (response.ok) {
-        seedUsers = await response.json();
-      }
-    } catch (error) {
-      console.error('Failed to fetch seed users from users.json', error);
-      // Fallback seed user
-      seedUsers = [{ username: 'Vimal', password: '12345', fullName: 'Vimaladharsan', email: 'vimal@example.com' }];
+      return JSON.parse(sessionUserStr);
+    } catch {
+      return null;
     }
-
-    const localUsersStr = localStorage.getItem('shopease_users');
-    let localUsers: any[] = [];
-    if (localUsersStr) {
-      try {
-        localUsers = JSON.parse(localUsersStr);
-      } catch (e) {
-        console.error('Failed to parse local users', e);
-      }
-    }
-
-    // Combine seed users and local storage users. Ensure uniqueness by username.
-    const userMap = new Map<string, any>();
-    seedUsers.forEach(u => userMap.set(u.username.toLowerCase(), u));
-    localUsers.forEach(u => userMap.set(u.username.toLowerCase(), u));
-
-    this.allUsers = Array.from(userMap.values());
-    this.isLoaded = true;
-    return this.allUsers;
   }
 
-  async login(usernameInput: string, passwordInput: string): Promise<boolean> {
-    await this.ensureUsersLoaded();
-    const user = this.allUsers.find(
-      u => u.username.toLowerCase() === usernameInput.toLowerCase() && u.password === passwordInput
-    );
-
+  private setCurrentUser(user: User | null) {
+    this.currentUserSignal.set(user);
     if (user) {
+      localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(SESSION_KEY);
+    }
+  }
+
+  getCurrentUser(): User | null {
+    return this.currentUser();
+  }
+
+  async login(username: string, password: string): Promise<boolean> {
+    try {
+      const res = await fetch(`${API_URL}/users/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      if (!res.ok) {
+        return false;
+      }
+      const user: User = await res.json();
       this.setCurrentUser(user);
       return true;
-    }
-    return false;
-  }
-
-  async register(newUser: any): Promise<{ success: boolean; message: string }> {
-    await this.ensureUsersLoaded();
-    const usernameLower = newUser.username.toLowerCase();
-    
-    const exists = this.allUsers.some(u => u.username.toLowerCase() === usernameLower);
-    if (exists) {
-      return { success: false, message: 'Username is already taken' };
-    }
-
-    // Add to all users
-    this.allUsers.push(newUser);
-
-    // Save to local storage users
-    const localUsersStr = localStorage.getItem('shopease_users');
-    let localUsers: any[] = [];
-    if (localUsersStr) {
-      try {
-        localUsers = JSON.parse(localUsersStr);
-      } catch (e) {}
-    }
-    localUsers.push(newUser);
-    localStorage.setItem('shopease_users', JSON.stringify(localUsers));
-
-    return { success: true, message: 'Registration successful' };
-  }
-  getPurchaseHistory(): any[] {
-  const currentUser = this.getCurrentUser();
-  return currentUser?.purchaseHistory || [];
-}
-
-addPurchase(order: any) {
-  const currentUser = this.getCurrentUser();
-  if (!currentUser) return;
-
-  if (!currentUser.purchaseHistory) {
-    currentUser.purchaseHistory = [];
-  }
-
-  currentUser.purchaseHistory.push(order);
-
-  // Update current session
-  this.setCurrentUser(currentUser);
-
-  // Update stored users
-  const localUsersStr = localStorage.getItem('shopease_users');
-  if (localUsersStr) {
-    const users = JSON.parse(localUsersStr);
-
-    const index = users.findIndex(
-      (u: any) =>
-        u.username.toLowerCase() === currentUser.username.toLowerCase()
-    );
-
-    if (index !== -1) {
-      users[index] = currentUser;
-      localStorage.setItem('shopease_users', JSON.stringify(users));
+    } catch (err) {
+      console.error('Login request failed — is the backend running?', err);
+      return false;
     }
   }
-}
+
+  async register(newUser: User): Promise<{ success: boolean; message: string }> {
+    try {
+      const res = await fetch(`${API_URL}/users/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUser)
+      });
+      if (res.ok) {
+        return { success: true, message: 'Registration successful' };
+      }
+      const body = await res.json().catch(() => null);
+      return { success: false, message: body?.message ?? 'Registration failed' };
+    } catch (err) {
+      console.error('Register request failed — is the backend running?', err);
+      return { success: false, message: 'Cannot reach the server' };
+    }
+  }
+
+  async updateProfile(changes: Pick<User, 'fullName' | 'email' | 'phone' | 'address'>): Promise<boolean> {
+    const currentUser = this.currentUser();
+    if (!currentUser) return false;
+
+    try {
+      const res = await fetch(`${API_URL}/users/${encodeURIComponent(currentUser.username)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(changes)
+      });
+      if (!res.ok) {
+        return false;
+      }
+      const updatedUser: User = await res.json();
+      this.setCurrentUser(updatedUser);
+      return true;
+    } catch (err) {
+      console.error('Profile update request failed', err);
+      return false;
+    }
+  }
+
+  async addPurchase(order: Order): Promise<boolean> {
+    const currentUser = this.currentUser();
+    if (!currentUser) return false;
+
+    try {
+      const res = await fetch(`${API_URL}/users/${encodeURIComponent(currentUser.username)}/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(order)
+      });
+      if (!res.ok) {
+        return false;
+      }
+      const updatedUser: User = await res.json();
+      this.setCurrentUser(updatedUser);
+      return true;
+    } catch (err) {
+      console.error('Order request failed', err);
+      return false;
+    }
+  }
+
+  getPurchaseHistory(): Order[] {
+    return this.currentUser()?.purchaseHistory ?? [];
+  }
+
   logout() {
     this.setCurrentUser(null);
   }

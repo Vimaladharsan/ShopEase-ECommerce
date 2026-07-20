@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "shopping-app",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start"],
+      "cwd": "C:\\Users\\vimal\\OneDrive\\Desktop\\e-com\\ShopEase-ECommerce\\shopping-app",
+      "port": 4200
+    }
+  ]
+}

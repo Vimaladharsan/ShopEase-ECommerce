@@ -7,7 +7,23 @@
     "memberSince": "2026-07-08",
     "phone": "",
     "address": "",
-    "purchaseHistory": []
+    "purchaseHistory": [
+      {
+        "orderId": "ORD936715",
+        "items": [
+          {
+            "id": 101,
+            "name": "Laptop",
+            "price": 100000,
+            "stock": 20,
+            "quantity": 1
+          }
+        ],
+        "total": 100000,
+        "date": "2026-07-19T17:44:07.288Z",
+        "status": "Delivered"
+      }
+    ]
   },
   {
     "username": "DemoUser",

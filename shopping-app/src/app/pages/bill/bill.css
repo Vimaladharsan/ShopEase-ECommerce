@@ -41,19 +41,19 @@ p{
 
 .logo{
     color:white;
-    font-size:2rem;
+    font-size:clamp(1.3rem,4vw,2rem);
     font-weight:bold;
 }
 
 .bill-container{
     width:min(92%,900px);
     margin:auto;
-    padding:40px 0;
+    padding:clamp(20px,4vw,40px) 0;
 }
 
 .bill-card{
     background:white;
-    padding:35px;
+    padding:clamp(20px,4vw,35px);
     border-radius:20px;
     box-shadow:0 8px 25px rgba(0,0,0,0.3);
     display:flex;

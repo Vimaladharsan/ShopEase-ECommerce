@@ -2,13 +2,13 @@
     width:100%;
     min-height:100vh;
     background:#000B2E;
-    padding-top:120px;
+    padding-top:clamp(76px,12vw,120px);
 }
 
 .details-container{
     width:min(95%,1400px);
     margin:auto;
-    padding:40px 0;
+    padding:clamp(20px,4vw,40px) 0;
 }
 
 .back-btn{
@@ -31,10 +31,10 @@
 .details-card{
     background:white;
     border-radius:25px;
-    padding:40px;
+    padding:clamp(20px,4vw,40px);
     display:grid;
     grid-template-columns:1fr 1.3fr;
-    gap:50px;
+    gap:clamp(25px,4vw,50px);
     box-shadow:0 15px 35px rgba(0,0,0,.25);
 }
 
@@ -213,6 +213,8 @@ hr{
 
     .image-placeholder{
         font-size:4rem;
+        max-width:300px;
+        margin:auto;
     }
 
 }

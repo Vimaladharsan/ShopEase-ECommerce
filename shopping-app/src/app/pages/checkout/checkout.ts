@@ -1,194 +1,98 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { DataService } from '../../services/data';
 import { Header } from '../../extras/header/header';
 import { CartService } from '../../services/cart';
+import { DataService } from '../../services/data';
 import { UserService } from '../../services/user';
 import { Popup } from '../../extras/popup/popup';
+import { CartItem, Order } from '../../models';
 
 @Component({
-  selector:'app-checkout',
-  standalone:true,
-  imports:[
+  selector: 'app-checkout',
+  standalone: true,
+  imports: [
     CommonModule,
     RouterModule,
     Header,
     Popup
   ],
-  templateUrl:'./checkout.html',
-  styleUrl:'./checkout.css'
+  templateUrl: './checkout.html',
+  styleUrl: './checkout.css'
 })
 export class Checkout {
+  private readonly router = inject(Router);
+  private readonly userService = inject(UserService);
+  private readonly dataService = inject(DataService);
+  readonly cartService = inject(CartService);
 
-  cartItems:any[]=[];
+  readonly showPopup = signal(false);
+  popupMessage = '';
+  popupType = 'success';
+  private popupTimer: ReturnType<typeof setTimeout> | undefined;
 
-  totalAmount=0;
-
-  username='';
-
-  showPopup=false;
-
-  popupMessage='';
-
-  popupType='success';
-
-  popupTimer:any;
-
-  constructor(
- private userService:UserService,
- private dataService:DataService,
- public cartService: CartService,
- private router:Router
-  ){
-    if(!this.userService.username){
-      this.router.navigate(['/signup']);
-      return;
-    }
-
-    this.cartItems=
-    this.cartService.cartItems;
-
-    this.username=
-    this.userService.username;
-
-    this.calculateTotal();
-
-  }
-
-  showPopupMessage(
-    message:string,
-    type:string='success'
-  ){
-
-    this.popupType=type;
-
-    this.popupMessage=message;
-
-    this.showPopup=true;
+  showPopupMessage(message: string, type: string = 'success') {
+    this.popupType = type;
+    this.popupMessage = message;
+    this.showPopup.set(true);
 
     clearTimeout(this.popupTimer);
-
-    this.popupTimer=setTimeout(()=>{
-
-      this.showPopup=false;
-
-    },1000);
-
+    this.popupTimer = setTimeout(() => {
+      this.showPopup.set(false);
+    }, 1000);
   }
 
-  calculateTotal(){
-
-    this.totalAmount=
-    this.cartService.getTotalAmount();
-
-  }
-
-  increaseQuantity(item:any){
-
-    if(item.stock > 0){
-
-      item.quantity++;
-
-      item.stock--;
-
-      this.calculateTotal();
-
+  increaseQuantity(item: CartItem) {
+    if (!this.cartService.increaseQuantity(item.id)) {
+      this.showPopupMessage('Not Enough Stock', 'error');
     }
-    else{
-
-      this.showPopupMessage(
-        'Not Enough Stock',
-        'error'
-      );
-
-    }
-
   }
 
-  decreaseQuantity(item:any){
-
-    if(item.quantity > 1){
-
-      item.quantity--;
-
-      item.stock++;
-
-      this.calculateTotal();
-
-    }
-
+  decreaseQuantity(item: CartItem) {
+    this.cartService.decreaseQuantity(item.id);
   }
 
-  removeItem(item:any){
-
-    item.stock += item.quantity;
-
-    this.cartService.removeFromCart(item);
-
-    this.cartItems=
-    this.cartService.cartItems;
-
-    this.calculateTotal();
-
-    this.showPopupMessage(
-      'Item Removed',
-      'success'
-    );
-
+  removeItem(item: CartItem) {
+    this.cartService.removeFromCart(item.id);
+    this.showPopupMessage('Item Removed', 'success');
   }
 
-  placeOrder(){
+  async placeOrder() {
+    const items = this.cartService.cartItems();
 
-    if(this.cartItems.length === 0){
-
-      this.showPopupMessage(
-        'Cart Is Empty',
-        'error'
-      );
-
+    if (items.length === 0) {
+      this.showPopupMessage('Cart Is Empty', 'error');
       return;
-
     }
 
-    this.cartService.lastOrder=[
-      ...this.cartItems
-    ];
+    const total = this.cartService.totalAmount();
 
-    this.cartService.lastTotal=
-    this.totalAmount;
+    const order: Order = {
+      orderId: 'ORD' + Math.floor(Math.random() * 1000000),
+      items: [...items],
+      total: total,
+      date: new Date(),
+      status: 'Delivered'
+    };
 
-   const order = {
+    const saved = await this.userService.addPurchase(order);
+    if (!saved) {
+      this.showPopupMessage('Could Not Place Order', 'error');
+      return;
+    }
 
-  orderId:
-  'ORD' +
-  Math.floor(Math.random() * 1000000),
+    this.cartService.lastOrder.set([...items]);
+    this.cartService.lastTotal.set(total);
+    this.cartService.lastOrderId.set(order.orderId);
+    this.cartService.clearCart();
 
-  items: [...this.cartItems],
+    // Sync catalog stock with what the server just recorded
+    this.dataService.refresh();
 
-  total: this.totalAmount,
+    this.showPopupMessage('Order Placed Successfully', 'success');
 
-  date: new Date(),
-
-  status: 'Delivered'
-
-};
-
-this.userService.addPurchase(order);
-
-    this.cartService.cartItems=[];
-
-    this.showPopupMessage(
-      'Order Placed Successfully',
-      'success'
-    );
-
-    setTimeout(()=>{
-
+    setTimeout(() => {
       this.router.navigate(['/bill']);
-
-    },1000);
-
+    }, 1000);
   }
-
 }

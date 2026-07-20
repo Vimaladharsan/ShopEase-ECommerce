@@ -1,80 +1,46 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
+import { API_URL } from '../api';
+import { Category } from '../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataService {
-  categories: any[] = [];
+  // Seeded with fallback data so the UI has content before the fetch resolves.
+  readonly categories = signal<Category[]>(this.getFallbackCategories());
+
   private isLoaded = false;
 
   constructor() {
-    // Synchronously seed fallback data to keep compatibility
-    this.categories = this.getFallbackCategories();
     this.loadProducts();
   }
 
-  async loadProducts(): Promise<any[]> {
+  async loadProducts(): Promise<Category[]> {
     if (this.isLoaded) {
-      return this.categories;
+      return this.categories();
     }
+    return this.refresh();
+  }
 
+  // Re-fetch the catalog from the server (e.g. after an order changes stock)
+  async refresh(): Promise<Category[]> {
     try {
-      const response = await fetch('/data/products.json');
+      const response = await fetch(`${API_URL}/products`);
       if (response.ok) {
         const data = await response.json();
         if (Array.isArray(data) && data.length > 0) {
-          this.categories = data;
+          this.categories.set(data);
         }
       }
     } catch (e) {
-      console.error('Failed to load products.json, using fallback data', e);
-    }
-
-    // Apply any local stock changes from localStorage
-    const localStockStr = localStorage.getItem('shopease_products_stock');
-    if (localStockStr) {
-      try {
-        const stockMap = JSON.parse(localStockStr);
-        for (let cat of this.categories) {
-          for (let prod of cat.products) {
-            if (stockMap[prod.id] !== undefined) {
-              prod.stock = stockMap[prod.id];
-            }
-          }
-        }
-      } catch (err) {
-        console.error('Failed to parse local stock map', err);
-      }
+      console.error('Failed to load products from the server, using fallback data', e);
     }
 
     this.isLoaded = true;
-    return this.categories;
+    return this.categories();
   }
 
-  updateProductStock(productId: number, newStock: number) {
-    let found = false;
-    for (let cat of this.categories) {
-      for (let prod of cat.products) {
-        if (prod.id === productId) {
-          prod.stock = newStock;
-          found = true;
-          break;
-        }
-      }
-      if (found) break;
-    }
-
-    // Save stock changes to local storage
-    const stockMap: { [key: number]: number } = {};
-    for (let cat of this.categories) {
-      for (let prod of cat.products) {
-        stockMap[prod.id] = prod.stock;
-      }
-    }
-    localStorage.setItem('shopease_products_stock', JSON.stringify(stockMap));
-  }
-
-  private getFallbackCategories() {
+  private getFallbackCategories(): Category[] {
     return [
       {
         id: 1,
@@ -119,4 +85,3 @@ export class DataService {
     ];
   }
 }
-

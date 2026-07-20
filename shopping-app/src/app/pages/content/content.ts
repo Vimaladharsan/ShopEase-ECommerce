@@ -1,197 +1,96 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { Header } from '../../extras/header/header';
 import { CartService } from '../../services/cart';
-import { UserService } from '../../services/user';
 import { Popup } from '../../extras/popup/popup';
+import { Product } from '../../models';
 
 @Component({
-  selector:'app-content',
-  standalone:true,
-  imports:[
+  selector: 'app-content',
+  standalone: true,
+  imports: [
     CommonModule,
     RouterModule,
     Header,
     Popup
   ],
-  templateUrl:'./content.html',
-  styleUrl:'./content.css'
+  templateUrl: './content.html',
+  styleUrl: './content.css'
 })
 export class Content {
+  private readonly router = inject(Router);
+  private readonly cartService = inject(CartService);
 
-  showPopup=false;
+  readonly showPopup = signal(false);
+  popupMessage = '';
+  popupType = 'success';
+  private popupTimer: ReturnType<typeof setTimeout> | undefined;
 
-  popupMessage='';
+  products: Product[] = [];
+  categoryName = '';
+  quantities: Record<number, number> = {};
 
-  popupType='success';
+  constructor() {
+    const selectedCategory = this.cartService.selectedCategory();
 
-  popupTimer:any;
-
-  products:any[]=[];
-
-  categoryName='';
-
-  username='';
-
-  quantities:any={};
-
-  constructor(
-    private router:Router,
-    public cartService:CartService,
-    private userService:UserService
-  ){
-    if(!this.userService.username){
-      this.router.navigate(['/signup']);
-      return;
+    if (selectedCategory) {
+      this.categoryName = selectedCategory.name;
+      this.products = selectedCategory.products;
     }
 
-    const selectedCategory=
-    this.cartService.selectedCategory;
-
-    if(selectedCategory){
-
-      this.categoryName=
-      selectedCategory.name;
-
-      this.products=
-      selectedCategory.products;
-
+    for (const product of this.products) {
+      this.quantities[product.id] = 1;
     }
-
-    this.username=
-    this.userService.username;
-
-    for(let product of this.products){
-
-      this.quantities[product.id]=1;
-
-    }
-
   }
 
-  showPopupMessage(
-    message:string,
-    type:string='success'
-  ){
-
-    this.popupType=type;
-
-    this.popupMessage=message;
-
-    this.showPopup=true;
+  showPopupMessage(message: string, type: string = 'success') {
+    this.popupType = type;
+    this.popupMessage = message;
+    this.showPopup.set(true);
 
     clearTimeout(this.popupTimer);
-
-    this.popupTimer=setTimeout(()=>{
-
-      this.showPopup=false;
-
-    },1000);
-
+    this.popupTimer = setTimeout(() => {
+      this.showPopup.set(false);
+    }, 1000);
   }
 
-  increaseQuantity(product:any){
-
-    if(
-      this.quantities[product.id] <
-      product.stock
-    ){
-
+  increaseQuantity(product: Product) {
+    if (this.quantities[product.id] < product.stock) {
       this.quantities[product.id]++;
-
+    } else {
+      this.showPopupMessage('Not Enough Stock', 'error');
     }
-    else{
-
-      this.showPopupMessage(
-        'Not Enough Stock',
-        'error'
-      );
-
-    }
-
   }
 
-  decreaseQuantity(product:any){
-
-    if(this.quantities[product.id] > 1){
-
+  decreaseQuantity(product: Product) {
+    if (this.quantities[product.id] > 1) {
       this.quantities[product.id]--;
-
     }
-
   }
 
-  addToCart(product:any){
+  addToCart(product: Product) {
+    const quantity = this.quantities[product.id];
 
-    const quantity=
-    this.quantities[product.id];
-
-    if(product.stock < quantity){
-
-      this.showPopupMessage(
-        'Not Enough Stock',
-        'error'
-      );
-
+    if (product.stock < quantity) {
+      this.showPopupMessage('Not Enough Stock', 'error');
       return;
-
     }
 
     product.stock -= quantity;
+    this.cartService.addToCart(product, quantity);
 
-    const existingItem=
-    this.cartService.cartItems.find(
-      item => item.id === product.id
-    );
-
-    if(existingItem){
-
-      existingItem.quantity += quantity;
-
-      existingItem.stock =
-      product.stock;
-
-    }
-    else{
-
-      this.cartService.cartItems.push({
-
-        id:product.id,
-
-        name:product.name,
-
-        price:product.price,
-
-        stock:product.stock,
-
-        quantity:quantity
-
-      });
-
-    }
-
-    this.showPopupMessage(
-      'Item Added To Cart',
-      'success'
-    );
-
-    this.quantities[product.id]=1;
-
+    this.showPopupMessage('Item Added To Cart', 'success');
+    this.quantities[product.id] = 1;
   }
-  viewProduct(product:any){
 
-  this.cartService.selectedProduct = product;
+  viewProduct(product: Product) {
+    this.cartService.selectedProduct.set(product);
+    this.router.navigate(['/product-details']);
+  }
 
-  this.router.navigate(['/product-details']);
-
-}
-
-  goToCheckout(){
-
+  goToCheckout() {
     this.router.navigate(['/checkout']);
-
   }
-
 }

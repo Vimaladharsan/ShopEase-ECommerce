@@ -1,6 +1,6 @@
 <div class="page">
     <app-header></app-header>
-    @if(showPopup){
+    @if(showPopup()){
 
     <app-popup
         [message]="popupMessage"
@@ -15,12 +15,12 @@
         </h1>
         <div class="checkout-layout">
             <div class="cart-items">
-                @if(cartItems.length === 0){
+                @if(cartService.cartItems().length === 0){
                     <div class="empty-cart">
                         Your cart is empty
                     </div>
                 }
-                @for(item of cartItems; track item.id){
+                @for(item of cartService.cartItems(); track item.id){
                     <div class="cart-card">
                         <div class="item-details">
                             <h2>
@@ -69,7 +69,7 @@
                         Total Items
                     </span>
                     <span>
-                        {{cartService.getCartCount()}}
+                        {{ cartService.cartCount() }}
                     </span>
                 </div>
                 <div class="summary-row">
@@ -77,7 +77,7 @@
                         Total Amount
                     </span>
                     <span>
-                        $ {{totalAmount}}
+                        $ {{ cartService.totalAmount() }}
                     </span>
                 </div>
                 <button

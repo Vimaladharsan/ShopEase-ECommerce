@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
 import { Header } from '../../extras/header/header';
 import { CartService } from '../../services/cart';
-import { UserService } from '../../services/user';
+import { Product } from '../../models';
 
 @Component({
   selector: 'app-product-details',
@@ -18,63 +18,41 @@ import { UserService } from '../../services/user';
   styleUrl: './product-details.css'
 })
 export class ProductDetails {
+  private readonly router = inject(Router);
+  readonly cartService = inject(CartService);
 
-  product: any;
-
+  product: Product | null = this.cartService.selectedProduct();
   quantity = 1;
 
-  constructor(
-    public cartService: CartService,
-    private userService: UserService,
-    private router: Router
-  ) {
-
-    if (!this.userService.username) {
-      this.router.navigate(['/signup']);
-      return;
-    }
-
-    this.product = this.cartService.selectedProduct;
-
+  constructor() {
     if (!this.product) {
       this.router.navigate(['/home']);
     }
-
   }
 
   increaseQuantity() {
-
-    if (this.quantity < this.product.stock) {
+    if (this.product && this.quantity < this.product.stock) {
       this.quantity++;
     }
-
   }
 
   decreaseQuantity() {
-
     if (this.quantity > 1) {
       this.quantity--;
     }
-
   }
 
   addToCart() {
+    if (!this.product) {
+      return;
+    }
 
-    this.cartService.addToCart(
-      this.product,
-      this.quantity
-    );
-
+    this.cartService.addToCart(this.product, this.quantity);
     this.product.stock -= this.quantity;
-
     this.router.navigate(['/checkout']);
-
   }
 
   back() {
-
     this.router.navigate(['/content']);
-
   }
-
 }

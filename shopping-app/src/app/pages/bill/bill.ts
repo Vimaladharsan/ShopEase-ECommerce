@@ -1,41 +1,35 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 
 import { CartService } from '../../services/cart';
 import { UserService } from '../../services/user';
+import { CartItem } from '../../models';
 
 @Component({
-  selector:'app-bill',
-  standalone:true,
-  imports:[CommonModule,RouterModule],
-  templateUrl:'./bill.html',
-  styleUrl:'./bill.css'
+  selector: 'app-bill',
+  standalone: true,
+  imports: [CommonModule, RouterModule],
+  templateUrl: './bill.html',
+  styleUrl: './bill.css'
 })
 export class Bill {
-  orderedItems:any[]=[];
-  totalAmount=0;
-  username='';
-  orderId='';
-  currentDate=new Date();
-  constructor(
-    private cartService:CartService,
-    private userService:UserService,
-    private router:Router
-  ){
-    if(!this.userService.username){
-      this.router.navigate(['/signup']);
-      return;
-    }
-    this.orderedItems =this.cartService.lastOrder;
-    this.totalAmount =this.cartService.lastTotal;
-    this.username =this.userService.username;
-    this.orderId ='ORD' + Math.floor(Math.random()*1000000);
-    if(this.orderedItems.length === 0){
+  private readonly router = inject(Router);
+  private readonly cartService = inject(CartService);
+
+  readonly orderedItems: CartItem[] = this.cartService.lastOrder();
+  readonly totalAmount = this.cartService.lastTotal();
+  readonly username = inject(UserService).username();
+  readonly orderId = this.cartService.lastOrderId();
+  readonly currentDate = new Date();
+
+  constructor() {
+    if (this.orderedItems.length === 0) {
       this.router.navigate(['/home']);
     }
   }
-  backToHome(){
+
+  backToHome() {
     this.router.navigate(['/home']);
   }
 }

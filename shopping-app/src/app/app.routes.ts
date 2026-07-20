@@ -1,49 +1,49 @@
 import { Routes } from '@angular/router';
-import { Home } from './pages/home/home';
-import { Signup } from './pages/signup/signup';
-import { Content } from './pages/content/content';
-import { Checkout } from './pages/checkout/checkout';
-import { Bill } from './pages/bill/bill';
-import { Profile } from './pages/profile/profile';
-import { History } from './pages/history/history';
-import { ProductDetails } from './pages/product-details/product-details';
+import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
     {
-        path:'',
-        redirectTo:'signup',
-        pathMatch:'full'
+        path: '',
+        redirectTo: 'signup',
+        pathMatch: 'full'
     },
     {
-        path:'signup',
-        component:Signup
+        path: 'signup',
+        loadComponent: () => import('./pages/signup/signup').then(m => m.Signup)
     },
     {
-        path:'home',
-        component:Home
+        path: 'home',
+        loadComponent: () => import('./pages/home/home').then(m => m.Home),
+        canActivate: [authGuard]
     },
     {
-        path:'content',
-        component:Content
+        path: 'content',
+        loadComponent: () => import('./pages/content/content').then(m => m.Content),
+        canActivate: [authGuard]
     },
     {
-    path:'product-details',
-    component:ProductDetails
-},
-    {
-        path:'checkout',
-        component:Checkout
+        path: 'product-details',
+        loadComponent: () => import('./pages/product-details/product-details').then(m => m.ProductDetails),
+        canActivate: [authGuard]
     },
     {
-        path:'bill',
-        component:Bill
+        path: 'checkout',
+        loadComponent: () => import('./pages/checkout/checkout').then(m => m.Checkout),
+        canActivate: [authGuard]
     },
     {
-        path:'profile',
-        component:Profile
+        path: 'bill',
+        loadComponent: () => import('./pages/bill/bill').then(m => m.Bill),
+        canActivate: [authGuard]
     },
     {
-        path:'history',
-        component:History
+        path: 'profile',
+        loadComponent: () => import('./pages/profile/profile').then(m => m.Profile),
+        canActivate: [authGuard]
+    },
+    {
+        path: 'history',
+        loadComponent: () => import('./pages/history/history').then(m => m.History),
+        canActivate: [authGuard]
     }
 ];

@@ -10,6 +10,8 @@
             ← Back to Products
         </button>
 
+        @if (product; as product) {
+
         <div class="details-card">
 
             <!-- Product Image -->
@@ -78,7 +80,7 @@
 
                         <strong>Category</strong>
 
-                        <span>{{ cartService.selectedCategory.name }}</span>
+                        <span>{{ cartService.selectedCategory()?.name }}</span>
 
                     </div>
 
@@ -143,6 +145,8 @@
             </div>
 
         </div>
+
+        }
 
     </div>
 
