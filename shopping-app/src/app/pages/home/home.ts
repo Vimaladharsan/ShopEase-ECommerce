@@ -5,6 +5,7 @@ import { Header } from '../../extras/header/header';
 import { DataService } from '../../services/data';
 import { CartService } from '../../services/cart';
 import { Category } from '../../models';
+import { categoryEmoji } from '../../product-icons';
 
 @Component({
   selector: 'app-home',
@@ -18,6 +19,7 @@ export class Home {
   private readonly cartService = inject(CartService);
 
   readonly categories = inject(DataService).categories;
+  readonly categoryEmoji = categoryEmoji;
 
   selectCategory(category: Category) {
     this.cartService.selectedCategory.set(category);

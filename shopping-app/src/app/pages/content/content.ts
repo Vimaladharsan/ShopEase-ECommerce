@@ -6,6 +6,7 @@ import { Header } from '../../extras/header/header';
 import { CartService } from '../../services/cart';
 import { Popup } from '../../extras/popup/popup';
 import { Product } from '../../models';
+import { productEmoji } from '../../product-icons';
 
 @Component({
   selector: 'app-content',
@@ -31,6 +32,7 @@ export class Content {
   products: Product[] = [];
   categoryName = '';
   quantities: Record<number, number> = {};
+  readonly productEmoji = productEmoji;
 
   constructor() {
     const selectedCategory = this.cartService.selectedCategory();
@@ -73,13 +75,10 @@ export class Content {
   addToCart(product: Product) {
     const quantity = this.quantities[product.id];
 
-    if (product.stock < quantity) {
+    if (!this.cartService.addToCart(product, quantity)) {
       this.showPopupMessage('Not Enough Stock', 'error');
       return;
     }
-
-    product.stock -= quantity;
-    this.cartService.addToCart(product, quantity);
 
     this.showPopupMessage('Item Added To Cart', 'success');
     this.quantities[product.id] = 1;

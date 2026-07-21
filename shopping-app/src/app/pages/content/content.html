@@ -16,16 +16,20 @@
         <div class="product-grid">
             @for(product of products; track product.id){
                 <div class="product-card">
+                    <div class="product-thumb">
+                        {{ productEmoji(product.name) }}
+                    </div>
                     <h2>
                         {{product.name}}
                     </h2>
-                    <p class="price">
-                        $ {{product.price}}
-                    </p>
-                    <p class="stock">
-                        Stock Left :
-                        {{product.stock}}
-                    </p>
+                    <div class="card-meta">
+                        <p class="price">
+                            {{ product.price | currency:'INR':'symbol':'1.0-0' }}
+                        </p>
+                        <p class="stock" [class.low]="product.stock <= 5">
+                            {{ product.stock > 0 ? product.stock + ' in stock' : 'Out of stock' }}
+                        </p>
+                    </div>
                     <div class="quantity-section">
                         <button
                             (click)="decreaseQuantity(product)"

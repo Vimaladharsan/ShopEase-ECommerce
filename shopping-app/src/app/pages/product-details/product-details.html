@@ -20,9 +20,9 @@
 
                 <div class="image-placeholder">
 
-                    📦
+                    {{ productEmoji(product.name) }}
 
-                    <span>Product Image</span>
+                    <span>{{ product.brand }}</span>
 
                 </div>
 
@@ -47,7 +47,7 @@
                 </div>
 
                 <h2 class="price">
-                    ₹ {{ product.price }}
+                    {{ product.price | currency:'INR':'symbol':'1.0-0' }}
                 </h2>
 
                 <p class="stock">

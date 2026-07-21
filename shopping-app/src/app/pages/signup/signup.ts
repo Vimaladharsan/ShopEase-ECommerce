@@ -31,6 +31,7 @@ export class Signup {
   confirmPassword = '';
 
   readonly showPopup = signal(false);
+  readonly submitting = signal(false);
   popupMessage = '';
   popupType = 'success';
 
@@ -54,10 +55,18 @@ export class Signup {
   }
 
   async onSubmit(form: NgForm) {
-    if (form.invalid) {
+    if (form.invalid || this.submitting()) {
       return;
     }
+    this.submitting.set(true);
+    try {
+      await this.handleSubmit();
+    } finally {
+      this.submitting.set(false);
+    }
+  }
 
+  private async handleSubmit() {
     if (this.isLoginMode) {
       // Login flow
       const success = await this.userService.login(this.username, this.password);

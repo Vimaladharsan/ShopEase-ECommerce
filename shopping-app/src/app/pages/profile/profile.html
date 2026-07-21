@@ -95,7 +95,7 @@
             </div>
 
             <div class="stat-card">
-                <h2>₹ {{totalSpent}}</h2>
+                <h2>{{ totalSpent | currency:'INR':'symbol':'1.0-0' }}</h2>
                 <span>Money Spent</span>
             </div>
 
@@ -129,10 +129,10 @@
                     </div>
 
                     <div>
-                        ₹ {{order.total}}
+                        {{ order.total | currency:'INR':'symbol':'1.0-0' }}
                     </div>
 
-                    <div class="status">
+                    <div [class]="'status status-' + order.status.toLowerCase()">
                         {{order.status}}
                     </div>
 

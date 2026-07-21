@@ -1,6 +1,6 @@
 import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import { UserService } from './user';
-import { CartItem, Category, Product } from '../models';
+import { CartItem, Category, Order, Product } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +11,8 @@ export class CartService {
   readonly selectedCategory = signal<Category | null>(null);
   readonly selectedProduct = signal<Product | null>(null);
 
-  readonly lastOrder = signal<CartItem[]>([]);
-  readonly lastTotal = signal(0);
-  readonly lastOrderId = signal('');
+  // The last order confirmed by the server (shown on the bill page)
+  readonly lastPlacedOrder = signal<Order | null>(null);
 
   private readonly items = signal<CartItem[]>([]);
 
@@ -54,10 +53,21 @@ export class CartService {
     localStorage.setItem(key, JSON.stringify(this.items()));
   }
 
-  addToCart(product: Product, quantity: number) {
+  /**
+   * Add a product to the cart. `stock` on the cart item is a snapshot of
+   * availability — quantity can never exceed it. Returns false when the
+   * requested quantity is not available.
+   */
+  addToCart(product: Product, quantity: number): boolean {
+    const existing = this.items().find(item => item.id === product.id);
+    const alreadyInCart = existing?.quantity ?? 0;
+
+    if (alreadyInCart + quantity > product.stock) {
+      return false;
+    }
+
     this.items.update(items => {
-      const existingItem = items.find(item => item.id === product.id);
-      if (existingItem) {
+      if (existing) {
         return items.map(item =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + quantity, stock: product.stock }
@@ -76,6 +86,7 @@ export class CartService {
       ];
     });
     this.persist();
+    return true;
   }
 
   removeFromCart(productId: number) {
@@ -85,14 +96,12 @@ export class CartService {
 
   increaseQuantity(productId: number): boolean {
     const item = this.items().find(i => i.id === productId);
-    if (!item || item.stock <= 0) {
+    if (!item || item.quantity >= item.stock) {
       return false;
     }
     this.items.update(items =>
       items.map(i =>
-        i.id === productId
-          ? { ...i, quantity: i.quantity + 1, stock: i.stock - 1 }
-          : i
+        i.id === productId ? { ...i, quantity: i.quantity + 1 } : i
       )
     );
     this.persist();
@@ -103,7 +112,7 @@ export class CartService {
     this.items.update(items =>
       items.map(i =>
         i.id === productId && i.quantity > 1
-          ? { ...i, quantity: i.quantity - 1, stock: i.stock + 1 }
+          ? { ...i, quantity: i.quantity - 1 }
           : i
       )
     );

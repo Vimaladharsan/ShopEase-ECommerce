@@ -105,8 +105,7 @@ export class Profile {
   logout() {
     this.userService.logout();
     this.cartService.clearCart();
-    this.cartService.lastOrder.set([]);
-    this.cartService.lastTotal.set(0);
+    this.cartService.lastPlacedOrder.set(null);
     this.router.navigate(['/signup']);
   }
 }

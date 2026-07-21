@@ -12,26 +12,22 @@
             </div>
         </div>
     </header>
+    @if(order; as order){
     <div class="bill-container">
         <div class="bill-card">
             <h1>
-                Order Successful 🎉
+                Order Placed 🎉
             </h1>
+            <p class="confirm-note">
+                Thank you {{username}}! Your order is confirmed and will be delivered soon.
+            </p>
             <div class="bill-top">
-                <div>
-                    <h3>
-                        Customer
-                    </h3>
-                    <p>
-                        {{username}}
-                    </p>
-                </div>
                 <div>
                     <h3>
                         Order ID
                     </h3>
                     <p>
-                        {{orderId}}
+                        {{order.orderId}}
                     </p>
                 </div>
                 <div>
@@ -39,14 +35,30 @@
                         Date
                     </h3>
                     <p>
-                        {{currentDate | date:'medium'}}
+                        {{order.date | date:'medium'}}
+                    </p>
+                </div>
+                <div>
+                    <h3>
+                        Payment
+                    </h3>
+                    <p>
+                        {{order.paymentMethod}}
+                    </p>
+                </div>
+                <div>
+                    <h3>
+                        Deliver To
+                    </h3>
+                    <p>
+                        {{order.address}}
                     </p>
                 </div>
             </div>
             <div class="items-section">
                 <div
                     class="bill-item"
-                    *ngFor="let item of orderedItems"
+                    *ngFor="let item of order.items"
                 >
                     <div>
                         <h2>
@@ -58,9 +70,20 @@
                         </p>
                     </div>
                     <div class="price-section">
-                        $
-                        {{item.price * item.quantity}}
+                        {{ item.price * item.quantity | currency:'INR':'symbol':'1.0-0' }}
                     </div>
+                </div>
+            </div>
+            <div class="breakdown">
+                <div class="breakdown-row">
+                    <span>Subtotal</span>
+                    <span>{{ order.subtotal | currency:'INR':'symbol':'1.0-0' }}</span>
+                </div>
+                <div class="breakdown-row">
+                    <span>Delivery Fee</span>
+                    <span [class.free-tag]="order.deliveryFee === 0">
+                        {{ order.deliveryFee === 0 ? 'FREE' : (order.deliveryFee | currency:'INR':'symbol':'1.0-0') }}
+                    </span>
                 </div>
             </div>
             <div class="total-section">
@@ -68,15 +91,24 @@
                     Total Amount
                 </h2>
                 <h2>
-                    $ {{totalAmount}}
+                    {{ order.total | currency:'INR':'symbol':'1.0-0' }}
                 </h2>
             </div>
-            <button
-                class="home-btn"
-                (click)="backToHome()"
-            >
-                Continue Shopping
-            </button>
+            <div class="bill-actions">
+                <button
+                    class="track-btn"
+                    (click)="goToHistory()"
+                >
+                    📦 Track Order
+                </button>
+                <button
+                    class="home-btn"
+                    (click)="backToHome()"
+                >
+                    Continue Shopping
+                </button>
+            </div>
         </div>
     </div>
+    }
 </div>

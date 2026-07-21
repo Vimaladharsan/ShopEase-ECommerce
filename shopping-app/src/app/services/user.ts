@@ -1,8 +1,14 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { API_URL } from '../api';
-import { Order, User } from '../models';
+import { CartItem, Order, User } from '../models';
 
 const SESSION_KEY = 'shopease_current_user';
+
+export interface PlaceOrderResult {
+  success: boolean;
+  message: string;
+  order?: Order;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -97,25 +103,79 @@ export class UserService {
     }
   }
 
-  async addPurchase(order: Order): Promise<boolean> {
+  async placeOrder(
+    items: CartItem[],
+    paymentMethod: string,
+    address: string
+  ): Promise<PlaceOrderResult> {
     const currentUser = this.currentUser();
-    if (!currentUser) return false;
+    if (!currentUser) {
+      return { success: false, message: 'Not logged in' };
+    }
 
     try {
       const res = await fetch(`${API_URL}/users/${encodeURIComponent(currentUser.username)}/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(order)
+        body: JSON.stringify({
+          items: items.map(i => ({ id: i.id, quantity: i.quantity })),
+          paymentMethod,
+          address
+        })
       });
+
+      const body = await res.json().catch(() => null);
       if (!res.ok) {
-        return false;
+        return { success: false, message: body?.message ?? 'Could not place order' };
       }
-      const updatedUser: User = await res.json();
-      this.setCurrentUser(updatedUser);
-      return true;
+
+      this.setCurrentUser(body.user);
+      return { success: true, message: 'Order placed', order: body.order };
     } catch (err) {
       console.error('Order request failed', err);
-      return false;
+      return { success: false, message: 'Cannot reach the server' };
+    }
+  }
+
+  // Fetch live order history (statuses progress over time on the server)
+  async fetchOrders(): Promise<Order[]> {
+    const currentUser = this.currentUser();
+    if (!currentUser) return [];
+
+    try {
+      const res = await fetch(`${API_URL}/users/${encodeURIComponent(currentUser.username)}/orders`);
+      if (!res.ok) {
+        return currentUser.purchaseHistory ?? [];
+      }
+      const orders: Order[] = await res.json();
+      this.setCurrentUser({ ...currentUser, purchaseHistory: orders });
+      return orders;
+    } catch (err) {
+      console.error('Orders request failed', err);
+      return currentUser.purchaseHistory ?? [];
+    }
+  }
+
+  async cancelOrder(orderId: string): Promise<{ success: boolean; message: string }> {
+    const currentUser = this.currentUser();
+    if (!currentUser) {
+      return { success: false, message: 'Not logged in' };
+    }
+
+    try {
+      const res = await fetch(
+        `${API_URL}/users/${encodeURIComponent(currentUser.username)}/orders/${encodeURIComponent(orderId)}/cancel`,
+        { method: 'POST' }
+      );
+      const body = await res.json().catch(() => null);
+      if (!res.ok) {
+        return { success: false, message: body?.message ?? 'Could not cancel order' };
+      }
+      this.setCurrentUser(body.user);
+      return { success: true, message: 'Order cancelled' };
+    } catch (err) {
+      console.error('Cancel request failed', err);
+      return { success: false, message: 'Cannot reach the server' };
     }
   }
 

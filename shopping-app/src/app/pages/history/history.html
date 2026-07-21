@@ -2,25 +2,53 @@
 
     <app-header></app-header>
 
+    @if(showPopup()){
+        <app-popup
+            [message]="popupMessage"
+            [type]="popupType"
+        >
+        </app-popup>
+    }
+
     <div class="history-container">
 
         <h1>
-            Purchase History
+            My Orders
         </h1>
 
-        @if(purchaseHistory.length === 0){
+        @if(loading()){
+            <div class="empty-history">
+                Loading your orders…
+            </div>
+        }
+        @else if(orders().length === 0){
 
             <div class="empty-history">
 
-                No Purchase History Found
+                You haven't placed any orders yet
 
             </div>
 
         }
 
-        @for(order of purchaseHistory; track order.orderId){
+        @for(order of orders(); track order.orderId){
 
             <div class="history-card">
+
+                <div class="card-head">
+                    <span class="status-chip" [class]="'status-chip ' + statusClass(order)">
+                        {{ statusIcon(order) }} {{ order.status }}
+                    </span>
+                    @if(canCancel(order)){
+                        <button
+                            class="cancel-order-btn"
+                            [disabled]="cancelling() === order.orderId"
+                            (click)="cancelOrder(order)"
+                        >
+                            {{ cancelling() === order.orderId ? 'Cancelling…' : 'Cancel Order' }}
+                        </button>
+                    }
+                </div>
 
                 <div class="history-top">
 
@@ -51,11 +79,23 @@
                     <div>
 
                         <h3>
-                            Total Amount
+                            Total
                         </h3>
 
                         <p>
-                            $ {{order.total}}
+                            {{ order.total | currency:'INR':'symbol':'1.0-0' }}
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Payment
+                        </h3>
+
+                        <p>
+                            {{ order.paymentMethod }}
                         </p>
 
                     </div>
@@ -83,8 +123,7 @@
 
                             <div class="price">
 
-                                $
-                                {{item.price * item.quantity}}
+                                {{ item.price * item.quantity | currency:'INR':'symbol':'1.0-0' }}
 
                             </div>
 

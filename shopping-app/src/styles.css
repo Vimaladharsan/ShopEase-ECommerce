@@ -1,3 +1,28 @@
+/* ===== ShopEase Design System ===== */
+
+:root{
+    --bg:#070D1E;
+    --surface:#0F1830;
+    --surface-2:#152140;
+    --surface-3:#1B2A50;
+    --border:rgba(148,163,184,.14);
+    --border-strong:rgba(148,163,184,.30);
+    --text:#EAF0FB;
+    --muted:#93A3C4;
+    --primary:#6366F1;
+    --primary-2:#8B5CF6;
+    --accent:#F97316;
+    --accent-2:#FB923C;
+    --success:#34D399;
+    --danger:#F87171;
+    --radius:18px;
+    --radius-sm:12px;
+    --shadow:0 20px 45px rgba(2,6,23,.55);
+    --shadow-soft:0 10px 25px rgba(2,6,23,.35);
+    --grad-primary:linear-gradient(135deg,var(--primary),var(--primary-2));
+    --grad-accent:linear-gradient(135deg,var(--accent),var(--accent-2));
+}
+
 *{
     margin:0;
     padding:0;
@@ -10,34 +35,75 @@ html{
 }
 
 body{
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:'Inter',Arial,Helvetica,sans-serif;
     min-height:100vh;
     overflow-x:hidden;
-    background:black;
-    color:white;
-    line-height:1.5;
+    color:var(--text);
+    line-height:1.6;
+    background:
+        radial-gradient(900px 500px at 85% -10%,rgba(99,102,241,.16),transparent 60%),
+        radial-gradient(700px 450px at -10% 25%,rgba(249,115,22,.10),transparent 55%),
+        radial-gradient(800px 500px at 55% 110%,rgba(139,92,246,.10),transparent 60%),
+        var(--bg);
+    background-attachment:fixed;
 }
 
 h1{
     text-align:center;
-    color:white;
+    color:var(--text);
     margin-bottom:30px;
-    font-size:clamp(1.8rem,5vw,3rem);
+    font-size:clamp(1.7rem,4.5vw,2.6rem);
+    font-weight:800;
+    letter-spacing:-0.02em;
 }
 
 h2{
-    font-size:clamp(1rem,3vw,1.8rem);
+    font-size:clamp(1rem,3vw,1.5rem);
+    font-weight:700;
+    letter-spacing:-0.01em;
+}
+
+h3{
+    font-weight:600;
 }
 
 button{
     cursor:pointer;
     border:none;
-    transition:0.3s;
+    transition:0.25s;
+    font-family:inherit;
+}
+
+input,
+textarea,
+select{
+    font-family:inherit;
 }
 
 img{
     max-width:100%;
     display:block;
+}
+
+::selection{
+    background:rgba(99,102,241,.45);
+    color:white;
+}
+
+::-webkit-scrollbar{
+    width:10px;
+    height:10px;
+}
+::-webkit-scrollbar-track{
+    background:var(--bg);
+}
+::-webkit-scrollbar-thumb{
+    background:var(--surface-3);
+    border-radius:8px;
+    border:2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover{
+    background:#27407a;
 }
 
 .page{
@@ -46,76 +112,159 @@ img{
     overflow-x:hidden;
 }
 
-.header{
-    width:100%;
-    min-height:70px;
+/* ===== Shared animation library ===== */
 
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-
-    padding:15px 20px;
-
-    background:darkblue;
-
-    gap:15px;
-}
-
-.logo{
-    color:white;
-    font-weight:bold;
-    font-size:clamp(1.2rem,4vw,2rem);
-}
-
-.right-section{
-    display:flex;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:12px;
-}
-
-.cart-section,
-.profile-section{
-    background:white;
-    color:darkblue;
-
-    padding:10px 16px;
-
-    border-radius:30px;
-
-    display:flex;
-    align-items:center;
-    gap:8px;
-
-    font-weight:bold;
-}
-
-.profile-image{
-    width:35px;
-    height:35px;
-
-    border-radius:50%;
-
-    background:orange;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-@media(max-width:768px){
-
-    .header{
-        justify-content:center;
-        text-align:center;
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(18px);
     }
-
-    .right-section{
-        justify-content:center;
-        width:100%;
+    to{
+        opacity:1;
+        transform:translateY(0);
     }
+}
 
+@keyframes popIn{
+    0%{
+        opacity:0;
+        transform:scale(.92) translateY(10px);
+    }
+    60%{
+        transform:scale(1.015) translateY(0);
+    }
+    100%{
+        opacity:1;
+        transform:scale(1) translateY(0);
+    }
+}
+
+@keyframes slideDown{
+    from{
+        opacity:0;
+        transform:translateY(-100%);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@keyframes floaty{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-7px);
+    }
+}
+
+@keyframes wiggle{
+    0%,100%{
+        transform:rotate(0deg) scale(1);
+    }
+    25%{
+        transform:rotate(-8deg) scale(1.08);
+    }
+    75%{
+        transform:rotate(8deg) scale(1.08);
+    }
+}
+
+@keyframes gradientMove{
+    0%{
+        background-position:0% 50%;
+    }
+    50%{
+        background-position:100% 50%;
+    }
+    100%{
+        background-position:0% 50%;
+    }
+}
+
+@keyframes pulseRing{
+    0%{
+        box-shadow:0 12px 28px rgba(249,115,22,.4),0 0 0 0 rgba(249,115,22,.45);
+    }
+    70%{
+        box-shadow:0 12px 28px rgba(249,115,22,.4),0 0 0 16px rgba(249,115,22,0);
+    }
+    100%{
+        box-shadow:0 12px 28px rgba(249,115,22,.4),0 0 0 0 rgba(249,115,22,0);
+    }
+}
+
+@keyframes celebrate{
+    0%{
+        transform:scale(0) rotate(-25deg);
+    }
+    60%{
+        transform:scale(1.25) rotate(8deg);
+    }
+    100%{
+        transform:scale(1) rotate(0deg);
+    }
+}
+
+/* Shine sweep on primary action buttons (global — applies inside components too) */
+.cart-btn,
+.checkout-btn,
+.buy-btn,
+.home-btn,
+.edit-btn,
+.save-btn,
+.history-btn,
+.checkout-floating-btn,
+.signup-container button{
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+}
+
+.cart-btn::after,
+.checkout-btn::after,
+.buy-btn::after,
+.home-btn::after,
+.edit-btn::after,
+.save-btn::after,
+.history-btn::after,
+.checkout-floating-btn::after,
+.signup-container button::after{
+    content:'';
+    position:absolute;
+    top:0;
+    left:-130%;
+    width:55%;
+    height:100%;
+    background:linear-gradient(105deg,transparent,rgba(255,255,255,.4),transparent);
+    transform:skewX(-20deg);
+    transition:left .55s ease;
+    z-index:1;
+    pointer-events:none;
+}
+
+.cart-btn:hover::after,
+.checkout-btn:hover::after,
+.buy-btn:hover::after,
+.home-btn:hover::after,
+.edit-btn:hover::after,
+.save-btn:hover::after,
+.history-btn:hover::after,
+.checkout-floating-btn:hover::after,
+.signup-container button:hover:not(:disabled)::after{
+    left:150%;
+}
+
+/* Accessibility: honor reduced-motion preference */
+@media(prefers-reduced-motion:reduce){
+    *,
+    *::before,
+    *::after{
+        animation-duration:0.01ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:0.01ms !important;
+    }
 }
 
 @media(max-width:480px){

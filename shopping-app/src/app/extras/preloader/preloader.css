@@ -4,50 +4,52 @@
     left: 0;
     width: 100%;
     height: 100vh;
-    background: white;
+    background:
+        radial-gradient(700px 400px at 80% -10%,rgba(99,102,241,.16),transparent 60%),
+        var(--bg, #070D1E);
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 9999;
 }
 .circles{
     display: flex;
-    gap: 15px;
+    gap: 14px;
 }
 .circles span{
-    width: 18px;
-    height: 18px;
-    border-radius:50% ;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
     display: block;
     animation: bounce 1s infinite ease-in-out;
 }
 .circles span:nth-child(1){
-    background: pink;   
+    background: #6366F1;
     animation-delay: 0s;
 }
 .circles span:nth-child(2){
-    background:lightblue;
-    animation-delay: 0.2s;
+    background: #8B5CF6;
+    animation-delay: 0.15s;
 }
 .circles span:nth-child(3){
-    background: greenyellow;
-    animation-delay: 0.4s;
+    background: #A78BFA;
+    animation-delay: 0.3s;
 }
 .circles span:nth-child(4){
-    background: turquoise;
-    animation-delay: 0.6s;
+    background: #FB923C;
+    animation-delay: 0.45s;
 }
 .circles span:nth-child(5){
-    background:lightcoral;
-    animation-delay: 0.8s;
+    background: #F97316;
+    animation-delay: 0.6s;
 }
 @keyframes bounce{
     0%,100%{
         transform:translateY(0);
-        opacity: 0.5;
+        opacity: 0.4;
     }
     50%{
-        transform: translateY(-15px);
+        transform: translateY(-14px);
         opacity: 1;
     }
 }
-

@@ -8,7 +8,7 @@
         "name": "Laptop",
         "brand": "HP",
         "price": 100000,
-        "stock": 19,
+        "stock": 20,
         "rating": 4.8,
         "reviews": 254,
         "description": "High-performance Intel Core i7 laptop with 16GB RAM and 512GB SSD, designed for work, gaming and multitasking.",

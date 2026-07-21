@@ -27,11 +27,10 @@
                                 {{item.name}}
                             </h2>
                             <p>
-                                $ {{item.price}}
+                                {{ item.price | currency:'INR':'symbol':'1.0-0' }}
                             </p>
                             <span>
-                                Stock :
-                                {{item.stock}}
+                                {{ item.stock }} available
                             </span>
                         </div>
                         <div class="item-actions">
@@ -59,6 +58,41 @@
                         </div>
                     </div>
                 }
+
+                @if(cartService.cartItems().length > 0){
+                    <div class="delivery-card">
+                        <h2>Delivery Details</h2>
+                        <label for="address">Delivery Address</label>
+                        <textarea
+                            id="address"
+                            rows="3"
+                            [(ngModel)]="address"
+                            placeholder="House no, street, city, pincode"
+                        ></textarea>
+
+                        <label>Payment Method</label>
+                        <div class="payment-options">
+                            <label class="payment-option" [class.selected]="paymentMethod === 'Cash on Delivery'">
+                                <input
+                                    type="radio"
+                                    name="payment"
+                                    value="Cash on Delivery"
+                                    [(ngModel)]="paymentMethod"
+                                >
+                                💵 Cash on Delivery
+                            </label>
+                            <label class="payment-option" [class.selected]="paymentMethod === 'UPI'">
+                                <input
+                                    type="radio"
+                                    name="payment"
+                                    value="UPI"
+                                    [(ngModel)]="paymentMethod"
+                                >
+                                📲 UPI on Delivery
+                            </label>
+                        </div>
+                    </div>
+                }
             </div>
             <div class="summary-section">
                 <h2>
@@ -66,26 +100,36 @@
                 </h2>
                 <div class="summary-row">
                     <span>
-                        Total Items
+                        Items ({{ cartService.cartCount() }})
                     </span>
                     <span>
-                        {{ cartService.cartCount() }}
+                        {{ cartService.totalAmount() | currency:'INR':'symbol':'1.0-0' }}
                     </span>
                 </div>
                 <div class="summary-row">
                     <span>
-                        Total Amount
+                        Delivery Fee
+                    </span>
+                    <span [class.free-tag]="deliveryFee() === 0 && cartService.cartCount() > 0">
+                        {{ deliveryFee() === 0 ? 'FREE' : (deliveryFee() | currency:'INR':'symbol':'1.0-0') }}
+                    </span>
+                </div>
+                <div class="summary-row total-row">
+                    <span>
+                        Total
                     </span>
                     <span>
-                        $ {{ cartService.totalAmount() }}
+                        {{ grandTotal() | currency:'INR':'symbol':'1.0-0' }}
                     </span>
                 </div>
                 <button
                     class="checkout-btn"
+                    [disabled]="placing()"
                     (click)="placeOrder()"
                 >
-                    Proceed To Checkout
+                    {{ placing() ? 'Placing Order…' : 'Place Order' }}
                 </button>
+                <p class="secure-note">🔒 Pay when your order arrives — no advance payment needed</p>
             </div>
         </div>
     </div>

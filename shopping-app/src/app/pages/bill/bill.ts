@@ -4,7 +4,7 @@ import { RouterModule, Router } from '@angular/router';
 
 import { CartService } from '../../services/cart';
 import { UserService } from '../../services/user';
-import { CartItem } from '../../models';
+import { Order } from '../../models';
 
 @Component({
   selector: 'app-bill',
@@ -15,21 +15,21 @@ import { CartItem } from '../../models';
 })
 export class Bill {
   private readonly router = inject(Router);
-  private readonly cartService = inject(CartService);
 
-  readonly orderedItems: CartItem[] = this.cartService.lastOrder();
-  readonly totalAmount = this.cartService.lastTotal();
+  readonly order: Order | null = inject(CartService).lastPlacedOrder();
   readonly username = inject(UserService).username();
-  readonly orderId = this.cartService.lastOrderId();
-  readonly currentDate = new Date();
 
   constructor() {
-    if (this.orderedItems.length === 0) {
+    if (!this.order) {
       this.router.navigate(['/home']);
     }
   }
 
   backToHome() {
     this.router.navigate(['/home']);
+  }
+
+  goToHistory() {
+    this.router.navigate(['/history']);
   }
 }

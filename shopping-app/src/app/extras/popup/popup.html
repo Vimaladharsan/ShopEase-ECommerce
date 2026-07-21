@@ -1,3 +1,4 @@
-<div class="popup">
+<div class="popup" [class.error]="type() === 'error'">
+    <span class="popup-icon">{{ type() === 'error' ? '✕' : '✓' }}</span>
     {{ message() }}
 </div>

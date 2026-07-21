@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Header } from '../../extras/header/header';
 import { CartService } from '../../services/cart';
 import { Product } from '../../models';
+import { productEmoji } from '../../product-icons';
 
 @Component({
   selector: 'app-product-details',
@@ -23,6 +24,7 @@ export class ProductDetails {
 
   product: Product | null = this.cartService.selectedProduct();
   quantity = 1;
+  readonly productEmoji = productEmoji;
 
   constructor() {
     if (!this.product) {
@@ -47,8 +49,9 @@ export class ProductDetails {
       return;
     }
 
-    this.cartService.addToCart(this.product, this.quantity);
-    this.product.stock -= this.quantity;
+    if (!this.cartService.addToCart(this.product, this.quantity)) {
+      return;
+    }
     this.router.navigate(['/checkout']);
   }
 

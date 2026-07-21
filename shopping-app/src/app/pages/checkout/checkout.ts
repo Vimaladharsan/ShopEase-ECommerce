@@ -1,12 +1,16 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { Header } from '../../extras/header/header';
 import { CartService } from '../../services/cart';
 import { DataService } from '../../services/data';
 import { UserService } from '../../services/user';
 import { Popup } from '../../extras/popup/popup';
-import { CartItem, Order } from '../../models';
+import { CartItem } from '../../models';
+
+const FREE_DELIVERY_ABOVE = 1000;
+const DELIVERY_FEE = 49;
 
 @Component({
   selector: 'app-checkout',
@@ -14,6 +18,7 @@ import { CartItem, Order } from '../../models';
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule,
     Header,
     Popup
   ],
@@ -31,6 +36,20 @@ export class Checkout {
   popupType = 'success';
   private popupTimer: ReturnType<typeof setTimeout> | undefined;
 
+  // Delivery details — prefilled from the profile
+  address = this.userService.currentUser()?.address ?? '';
+  paymentMethod = 'Cash on Delivery';
+
+  readonly placing = signal(false);
+
+  readonly deliveryFee = computed(() => {
+    const subtotal = this.cartService.totalAmount();
+    if (subtotal === 0) return 0;
+    return subtotal >= FREE_DELIVERY_ABOVE ? 0 : DELIVERY_FEE;
+  });
+
+  readonly grandTotal = computed(() => this.cartService.totalAmount() + this.deliveryFee());
+
   showPopupMessage(message: string, type: string = 'success') {
     this.popupType = type;
     this.popupMessage = message;
@@ -39,12 +58,12 @@ export class Checkout {
     clearTimeout(this.popupTimer);
     this.popupTimer = setTimeout(() => {
       this.showPopup.set(false);
-    }, 1000);
+    }, 1800);
   }
 
   increaseQuantity(item: CartItem) {
     if (!this.cartService.increaseQuantity(item.id)) {
-      this.showPopupMessage('Not Enough Stock', 'error');
+      this.showPopupMessage(`Only ${item.stock} available`, 'error');
     }
   }
 
@@ -58,41 +77,41 @@ export class Checkout {
   }
 
   async placeOrder() {
+    if (this.placing()) {
+      return;
+    }
+
     const items = this.cartService.cartItems();
 
     if (items.length === 0) {
-      this.showPopupMessage('Cart Is Empty', 'error');
+      this.showPopupMessage('Your cart is empty', 'error');
       return;
     }
 
-    const total = this.cartService.totalAmount();
-
-    const order: Order = {
-      orderId: 'ORD' + Math.floor(Math.random() * 1000000),
-      items: [...items],
-      total: total,
-      date: new Date(),
-      status: 'Delivered'
-    };
-
-    const saved = await this.userService.addPurchase(order);
-    if (!saved) {
-      this.showPopupMessage('Could Not Place Order', 'error');
+    if (!this.address.trim()) {
+      this.showPopupMessage('Please enter a delivery address', 'error');
       return;
     }
 
-    this.cartService.lastOrder.set([...items]);
-    this.cartService.lastTotal.set(total);
-    this.cartService.lastOrderId.set(order.orderId);
+    this.placing.set(true);
+    const result = await this.userService.placeOrder(items, this.paymentMethod, this.address.trim());
+    this.placing.set(false);
+
+    if (!result.success || !result.order) {
+      this.showPopupMessage(result.message, 'error');
+      // Stock may have changed on the server — refresh the catalog
+      this.dataService.refresh();
+      return;
+    }
+
+    this.cartService.lastPlacedOrder.set(result.order);
     this.cartService.clearCart();
-
-    // Sync catalog stock with what the server just recorded
     this.dataService.refresh();
 
     this.showPopupMessage('Order Placed Successfully', 'success');
 
     setTimeout(() => {
       this.router.navigate(['/bill']);
-    }, 1000);
+    }, 900);
   }
 }

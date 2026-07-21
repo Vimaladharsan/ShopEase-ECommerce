@@ -26,17 +26,23 @@ export interface CartItem {
   quantity: number;
 }
 
+export type OrderStatus = 'Placed' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
+
 export interface Order {
   orderId: string;
   items: CartItem[];
+  subtotal: number;
+  deliveryFee: number;
   total: number;
   date: string | Date;
-  status: string;
+  status: OrderStatus | string;
+  paymentMethod: string;
+  address: string;
 }
 
 export interface User {
   username: string;
-  password: string;
+  password?: string;
   fullName: string;
   email: string;
   memberSince?: string;

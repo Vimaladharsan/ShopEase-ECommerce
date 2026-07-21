@@ -1,29 +1,13 @@
 [
   {
     "username": "Vimal",
-    "password": "12345",
+    "password": "$2b$10$PGAYuFM8Gz/e3iz/b5qG/eEpfTJbSOEaKdm3x4boofnk86L.K4cvi",
     "fullName": "Vimaladharsan",
     "email": "vimal@example.com",
     "memberSince": "2026-07-08",
     "phone": "",
     "address": "",
-    "purchaseHistory": [
-      {
-        "orderId": "ORD936715",
-        "items": [
-          {
-            "id": 101,
-            "name": "Laptop",
-            "price": 100000,
-            "stock": 20,
-            "quantity": 1
-          }
-        ],
-        "total": 100000,
-        "date": "2026-07-19T17:44:07.288Z",
-        "status": "Delivered"
-      }
-    ]
+    "purchaseHistory": []
   },
   {
     "username": "DemoUser",
@@ -31,6 +15,16 @@
     "fullName": "Demo User",
     "email": "demo@shopease.com",
     "memberSince": "2026-07-08",
+    "phone": "",
+    "address": "",
+    "purchaseHistory": []
+  },
+  {
+    "username": "senthil7",
+    "password": "vimal@senthil",
+    "fullName": "senthil",
+    "email": "vimalnithin1@gmail.com",
+    "memberSince": "2026-07-20T14:39:43.147Z",
     "phone": "",
     "address": "",
     "purchaseHistory": []

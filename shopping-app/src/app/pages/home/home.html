@@ -2,6 +2,7 @@
     <app-header></app-header>
     <div class="home-content">
         <h1>Select Category</h1>
+        <p class="subtitle">Browse our collections and find what you love</p>
         <div class="category-grid">
             @for(category of categories(); track category.id){
                 <div
@@ -9,9 +10,17 @@
                     (click)="selectCategory(category)"
                 >
 
+                    <div class="category-icon">
+                        {{ categoryEmoji(category.name) }}
+                    </div>
+
                     <h2>
                         {{category.name}}
                     </h2>
+
+                    <span class="category-count">
+                        {{ category.products.length }} products
+                    </span>
 
                 </div>
             }
